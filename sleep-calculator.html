@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Baby Sleep Calculator – Nap Schedule & Bedtime by Age | BabyBloom</title>
+  <meta name="description" content="Get a personalized baby sleep schedule based on your baby's age. Calculate ideal nap times, number of naps, total sleep needed, and the perfect bedtime — free and science-based." />
+  <meta name="keywords" content="baby sleep calculator, baby nap schedule, baby bedtime calculator, infant sleep schedule, how much sleep does baby need, newborn sleep" />
+  <meta property="og:title" content="Baby Sleep Calculator – BabyBloom" />
+  <meta property="og:description" content="Personalized baby sleep schedule with nap times, bedtime, and wake windows by age. Free and science-based." />
+  <meta property="og:type" content="website" />
+  <link rel="canonical" href="https://babybloom.app/sleep-calculator" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How much sleep does a newborn need?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Newborns (0–3 months) need 14–17 hours of sleep per day, including frequent naps. They sleep in short 2–4 hour cycles and wake to feed. It's normal for newborns to have no set schedule in the early weeks."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is a wake window for babies?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A wake window is the amount of time a baby can comfortably stay awake between sleep periods before becoming overtired. Wake windows grow as babies get older — from just 45–60 minutes for newborns to 4–6 hours for toddlers."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "When do babies drop to one nap?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Most babies transition from 2 naps to 1 nap between 14–18 months. Signs include resisting one of the naps, difficulty falling asleep at bedtime, or naps getting shorter. The transition is usually complete by 18 months."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the ideal bedtime for a baby?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Most babies do best with a bedtime between 6:30–8:00 PM. Babies have a natural melatonin surge in the early evening, making this the ideal window. An overtired baby who misses this window may actually fight sleep harder — this is called the 'second wind.'"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I know if my baby is overtired?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Signs of an overtired baby include rubbing eyes, pulling ears, yawning, staring blankly, becoming fussy or clingy, arching their back, or hyperactivity (a 'second wind'). Catching your baby at the first signs of tiredness helps them fall asleep more easily."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-deep:       #0d0d14;
+      --bg-card:       rgba(255,255,255,0.04);
+      --bg-card-hover: rgba(255,255,255,0.07);
+      --border:        rgba(255,255,255,0.08);
+      --border-glow:   rgba(255,180,150,0.35);
+      --peach:         #ffb49a;
+      --peach-2:       #ffd4c2;
+      --peach-dark:    #e8845e;
+      --lilac:         #c4b5fd;
+      --lilac-2:       #a78bfa;
+      --lilac-dark:    #7c3aed;
+      --pink:          #f9a8d4;
+      --mint:          #6ee7b7;
+      --sky:           #7dd3fc;
+      --indigo:        #818cf8;
+      --text-primary:  #f0edf8;
+      --text-secondary:#b0a8c8;
+      --text-muted:    #6b6580;
+      --gradient-hero: linear-gradient(135deg, #ffb49a 0%, #c4b5fd 50%, #f9a8d4 100%);
+      --gradient-btn:  linear-gradient(135deg, #ffb49a 0%, #e879a0 50%, #a78bfa 100%);
+      --shadow-glow:   0 0 40px rgba(255,180,150,0.15), 0 0 80px rgba(196,181,253,0.1);
+      --radius-lg:     20px;
+      --radius-xl:     28px;
+      --radius-pill:   999px;
+      --transition:    0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg-deep); color: var(--text-primary); min-height: 100vh; overflow-x: hidden; line-height: 1.6; }
+
+    /* BLOBS */
+    .bg-blobs { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.18; animation: blobFloat 18s ease-in-out infinite alternate; }
+    .blob-1 { width: 520px; height: 520px; background: #818cf8; top: -120px; left: -120px; animation-duration: 20s; }
+    .blob-2 { width: 440px; height: 440px; background: #c4b5fd; top: 30%; right: -100px; animation-duration: 25s; animation-delay: -5s; }
+    .blob-3 { width: 380px; height: 380px; background: #7dd3fc; bottom: 10%; left: 20%; animation-duration: 22s; animation-delay: -10s; }
+    .blob-4 { width: 300px; height: 300px; background: #f9a8d4; bottom: -80px; right: 15%; animation-duration: 28s; animation-delay: -8s; }
+    @keyframes blobFloat { 0%{transform:translate(0,0) scale(1)} 33%{transform:translate(30px,-40px) scale(1.05)} 66%{transform:translate(-20px,30px) scale(0.97)} 100%{transform:translate(10px,-20px) scale(1.03)} }
+
+    /* UTILITY */
+    .gradient-text { background: var(--gradient-hero); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+
+    /* NAVBAR */
+    .navbar { position: sticky; top: 0; z-index: 100; background: rgba(13,13,20,0.75); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 0 24px; transition: box-shadow var(--transition); }
+    .navbar.scrolled { box-shadow: 0 4px 40px rgba(0,0,0,0.4); }
+    .nav-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 68px; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
+    .nav-logo-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--gradient-btn); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .nav-logo-text { background: var(--gradient-hero); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .nav-links { display: flex; align-items: center; gap: 8px; list-style: none; }
+    .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 8px 14px; border-radius: var(--radius-pill); transition: color var(--transition), background var(--transition); }
+    .nav-links a:hover { color: var(--text-primary); background: rgba(255,255,255,0.06); }
+    .nav-links a.active { color: var(--text-primary); background: rgba(255,255,255,0.06); }
+    .nav-cta { background: var(--gradient-btn) !important; color: #fff !important; padding: 8px 20px !important; border-radius: var(--radius-pill) !important; font-weight: 600 !important; box-shadow: 0 4px 20px rgba(255,100,100,0.3); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 6px; border: none; background: none; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--text-primary); border-radius: 2px; transition: var(--transition); }
+    .mobile-menu { display: none; flex-direction: column; gap: 4px; padding: 12px 0 16px; border-top: 1px solid var(--border); }
+    .mobile-menu a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 500; padding: 10px 16px; border-radius: 12px; transition: color var(--transition), background var(--transition); }
+    .mobile-menu a:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+    .mobile-menu.open { display: flex; }
+
+    /* HERO */
+    .hero { position: relative; z-index: 1; text-align: center; padding: 96px 24px 64px; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 18px; border-radius: var(--radius-pill); border: 1px solid rgba(129,140,248,0.3); background: rgba(129,140,248,0.08); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--indigo); margin-bottom: 28px; animation: fadeDown 0.7s ease both; }
+    .hero-badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--indigo); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+    .hero h1 { font-size: clamp(2.4rem, 6vw, 4.2rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 20px; animation: fadeDown 0.7s 0.1s ease both; }
+    .hero p { font-size: clamp(1rem, 2.5vw, 1.2rem); color: var(--text-secondary); max-width: 540px; margin: 0 auto 36px; line-height: 1.7; animation: fadeDown 0.7s 0.2s ease both; }
+    .hero-stats { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; animation: fadeDown 0.7s 0.3s ease both; }
+    .hero-stat { text-align: center; }
+    .hero-stat-num { font-size: 1.6rem; font-weight: 800; background: var(--gradient-hero); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-stat-label { font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+    .hero-divider { width: 1px; height: 40px; background: var(--border); align-self: center; }
+
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn   { from{opacity:0} to{opacity:1} }
+    @keyframes numberPop{ 0%{transform:scale(0.5);opacity:0} 70%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
+
+    /* CALC SECTION */
+    .calc-section { position: relative; z-index: 1; padding: 0 24px 80px; }
+    .calc-card { max-width: 680px; margin: 0 auto; border-radius: var(--radius-xl); border: 1px solid var(--border); background: rgba(255,255,255,0.03); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); box-shadow: var(--shadow-glow), 0 40px 80px rgba(0,0,0,0.4); overflow: hidden; animation: fadeUp 0.7s 0.3s ease both; }
+    .calc-header { padding: 32px 36px 0; display: flex; align-items: center; gap: 14px; }
+    .calc-icon { width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg,#818cf8,#c4b5fd); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; box-shadow: 0 8px 24px rgba(129,140,248,0.35); }
+    .calc-header-text h2 { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; }
+    .calc-header-text p { font-size: 0.85rem; color: var(--text-muted); margin-top: 2px; }
+    .calc-body { padding: 28px 36px 36px; }
+
+    /* INPUT */
+    .input-group { margin-bottom: 24px; }
+    .input-label { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+
+    /* Age selector grid */
+    .age-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
+    .age-option { position: relative; }
+    .age-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+    .age-option label {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 14px 12px; border-radius: var(--radius-lg);
+      border: 1.5px solid var(--border); background: rgba(255,255,255,0.04);
+      cursor: pointer; transition: all var(--transition); text-align: center; gap: 4px;
+    }
+    .age-option label:hover { border-color: rgba(129,140,248,0.4); background: rgba(129,140,248,0.06); }
+    .age-option input:checked + label { border-color: rgba(129,140,248,0.6); background: rgba(129,140,248,0.12); box-shadow: 0 0 0 3px rgba(129,140,248,0.1); }
+    .age-option-emoji { font-size: 22px; }
+    .age-option-label { font-size: 0.85rem; font-weight: 700; color: var(--text-primary); }
+    .age-option-sub { font-size: 0.72rem; color: var(--text-muted); }
+    .age-option input:checked + label .age-option-label { color: var(--indigo); }
+
+    /* Wake time */
+    .time-input { width: 100%; padding: 16px 20px; background: rgba(255,255,255,0.05); border: 1.5px solid var(--border); border-radius: var(--radius-lg); color: var(--text-primary); font-size: 1.05rem; font-family: inherit; font-weight: 500; outline: none; transition: border-color var(--transition), box-shadow var(--transition); cursor: pointer; appearance: none; -webkit-appearance: none; }
+    .time-input::-webkit-calendar-picker-indicator { filter: invert(0.7); cursor: pointer; opacity: 0.6; }
+    .time-input:focus { border-color: var(--indigo); box-shadow: 0 0 0 4px rgba(129,140,248,0.12); background: rgba(255,255,255,0.07); }
+    .time-input.error { border-color: #f87171; box-shadow: 0 0 0 4px rgba(248,113,113,0.12); }
+    .input-error { display: none; font-size: 0.8rem; color: #f87171; margin-top: 8px; padding-left: 4px; align-items: center; gap: 6px; }
+    .input-error.show { display: flex; animation: fadeIn 0.3s ease; }
+
+    .calc-btn { width: 100%; padding: 17px 24px; border-radius: var(--radius-lg); background: var(--gradient-btn); color: #fff; font-size: 1rem; font-weight: 700; letter-spacing: 0.02em; border: none; cursor: pointer; position: relative; overflow: hidden; transition: transform var(--transition), box-shadow var(--transition); box-shadow: 0 8px 30px rgba(200,100,120,0.4); }
+    .calc-btn::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg,rgba(255,255,255,0.15),transparent); opacity: 0; transition: opacity var(--transition); }
+    .calc-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(200,100,120,0.5); }
+    .calc-btn:hover::before { opacity: 1; }
+    .calc-btn:active { transform: translateY(0); }
+    .calc-btn-inner { display: flex; align-items: center; justify-content: center; gap: 10px; pointer-events: none; }
+    .calc-btn-icon { font-size: 18px; transition: transform var(--transition); }
+    .calc-btn:hover .calc-btn-icon { transform: scale(1.2) rotate(-5deg); }
+
+    /* RESULT */
+    .result-section { display: none; padding: 0 24px 80px; position: relative; z-index: 1; }
+    .result-section.show { display: block; animation: fadeUp 0.6s ease both; }
+    .result-inner { max-width: 680px; margin: 0 auto; }
+
+    .result-title-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 12px; flex-wrap: wrap; }
+    .result-title { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
+    .copy-btn { display: flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: var(--radius-pill); background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--text-secondary); font-size: 0.82rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: all var(--transition); }
+    .copy-btn:hover { background: rgba(196,181,253,0.12); border-color: rgba(196,181,253,0.4); color: var(--lilac); transform: translateY(-1px); }
+    .copy-btn.copied { background: rgba(110,231,183,0.12); border-color: rgba(110,231,183,0.4); color: var(--mint); }
+
+    /* Stat grid */
+    .result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+    .stat-card { border-radius: var(--radius-lg); border: 1px solid var(--border); background: rgba(255,255,255,0.04); padding: 22px 18px; text-align: center; cursor: default; transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition), background var(--transition); position: relative; overflow: hidden; }
+    .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; opacity: 0; transition: opacity var(--transition); }
+    .stat-card.peach::before  { background: linear-gradient(90deg,#ffb49a,#f9a8d4); }
+    .stat-card.lilac::before  { background: linear-gradient(90deg,#c4b5fd,#a78bfa); }
+    .stat-card.indigo::before { background: linear-gradient(90deg,#818cf8,#c4b5fd); }
+    .stat-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.14); background: rgba(255,255,255,0.07); box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+    .stat-card:hover::before { opacity: 1; }
+    .stat-card-icon { font-size: 26px; margin-bottom: 10px; display: block; }
+    .stat-card-num { font-size: clamp(1.6rem,4vw,2.2rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; margin-bottom: 6px; }
+    .stat-card.peach .stat-card-num  { background: linear-gradient(135deg,#ffb49a,#f9a8d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .stat-card.lilac .stat-card-num  { background: linear-gradient(135deg,#c4b5fd,#a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .stat-card.indigo .stat-card-num { background: linear-gradient(135deg,#818cf8,#c4b5fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .stat-card-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; }
+    .stat-card-sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* Schedule timeline */
+    .schedule-card { border-radius: var(--radius-lg); border: 1px solid var(--border); background: rgba(255,255,255,0.03); padding: 24px; margin-bottom: 14px; }
+    .schedule-title { font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+    .timeline-item { display: flex; align-items: stretch; gap: 0; }
+    .timeline-left { display: flex; flex-direction: column; align-items: center; width: 40px; flex-shrink: 0; }
+    .timeline-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; border: 2px solid; }
+    .timeline-dot.wake    { background: rgba(255,180,150,0.3); border-color: var(--peach); }
+    .timeline-dot.nap     { background: rgba(129,140,248,0.3); border-color: var(--indigo); }
+    .timeline-dot.bed     { background: rgba(196,181,253,0.3); border-color: var(--lilac); }
+    .timeline-dot.feed    { background: rgba(110,231,183,0.3); border-color: var(--mint); }
+    .timeline-line { flex: 1; width: 2px; background: rgba(255,255,255,0.05); margin: 4px 0; }
+    .timeline-item:last-child .timeline-line { display: none; }
+    .timeline-content { padding: 0 0 18px 12px; flex: 1; }
+    .timeline-time { font-size: 0.78rem; font-weight: 700; color: var(--text-muted); margin-bottom: 3px; }
+    .timeline-label { font-size: 0.9rem; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+    .timeline-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
+    .timeline-badge { display: inline-block; padding: 2px 8px; border-radius: var(--radius-pill); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
+    .badge-wake  { background: rgba(255,180,150,0.12); color: var(--peach); border: 1px solid rgba(255,180,150,0.25); }
+    .badge-nap   { background: rgba(129,140,248,0.12); color: var(--indigo); border: 1px solid rgba(129,140,248,0.25); }
+    .badge-bed   { background: rgba(196,181,253,0.12); color: var(--lilac); border: 1px solid rgba(196,181,253,0.25); }
+    .badge-night { background: rgba(129,140,248,0.12); color: var(--indigo); border: 1px solid rgba(129,140,248,0.25); }
+
+    /* Tips card */
+    .tips-card { border-radius: var(--radius-lg); border: 1px solid var(--border); background: rgba(255,255,255,0.03); padding: 20px 24px; margin-bottom: 14px; }
+    .tips-title { font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .tip-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .tip-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .tip-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .tip-text { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5; }
+
+    /* Detail card */
+    .detail-card { border-radius: var(--radius-lg); border: 1px solid var(--border); background: rgba(255,255,255,0.03); padding: 20px 24px; margin-bottom: 14px; }
+    .detail-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .detail-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .detail-row:first-child { padding-top: 0; }
+    .detail-key { font-size: 0.88rem; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
+    .detail-key-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .detail-key-dot.peach  { background: var(--peach); }
+    .detail-key-dot.lilac  { background: var(--lilac); }
+    .detail-key-dot.mint   { background: var(--mint); }
+    .detail-key-dot.indigo { background: var(--indigo); }
+    .detail-val { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); text-align: right; }
+
+    /* TOOLS */
+    .tools-section { position: relative; z-index: 1; padding: 0 24px 80px; }
+    .section-header { text-align: center; margin-bottom: 48px; }
+    .section-badge { display: inline-block; padding: 5px 16px; border-radius: var(--radius-pill); background: rgba(196,181,253,0.1); border: 1px solid rgba(196,181,253,0.25); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--lilac); margin-bottom: 16px; }
+    .section-title { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 12px; }
+    .section-sub { font-size: 1rem; color: var(--text-secondary); max-width: 480px; margin: 0 auto; }
+    .tools-grid { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+    .tool-card { border-radius: var(--radius-xl); border: 1px solid var(--border); background: rgba(255,255,255,0.03); padding: 28px; cursor: pointer; transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition), background var(--transition); position: relative; overflow: hidden; text-decoration: none; color: inherit; display: block; }
+    .tool-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 120px; opacity: 0; transition: opacity var(--transition); border-radius: 0 0 var(--radius-xl) var(--radius-xl); }
+    .tool-card-1::after { background: radial-gradient(ellipse at bottom, rgba(255,180,150,0.08), transparent); }
+    .tool-card-2::after { background: radial-gradient(ellipse at bottom, rgba(196,181,253,0.08), transparent); }
+    .tool-card-3::after { background: radial-gradient(ellipse at bottom, rgba(110,231,183,0.08), transparent); }
+    .tool-card:hover { transform: translateY(-6px); border-color: rgba(255,255,255,0.12); background: rgba(255,255,255,0.06); box-shadow: 0 24px 60px rgba(0,0,0,0.35); }
+    .tool-card:hover::after { opacity: 1; }
+    .tool-icon { width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 18px; position: relative; z-index: 1; }
+    .tool-icon-1 { background: linear-gradient(135deg,rgba(255,180,150,0.2),rgba(249,168,212,0.2)); border: 1px solid rgba(255,180,150,0.25); }
+    .tool-icon-2 { background: linear-gradient(135deg,rgba(196,181,253,0.2),rgba(167,139,250,0.2)); border: 1px solid rgba(196,181,253,0.25); }
+    .tool-icon-3 { background: linear-gradient(135deg,rgba(110,231,183,0.2),rgba(52,211,153,0.2)); border: 1px solid rgba(110,231,183,0.25); }
+    .tool-name { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; position: relative; z-index: 1; }
+    .tool-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 18px; position: relative; z-index: 1; }
+    .tool-link { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; position: relative; z-index: 1; transition: gap var(--transition); }
+    .tool-link-1 { color: var(--peach); } .tool-link-2 { color: var(--lilac); } .tool-link-3 { color: var(--mint); }
+    .tool-card:hover .tool-link { gap: 10px; }
+    .tool-tag { position: absolute; top: 18px; right: 18px; padding: 4px 10px; border-radius: var(--radius-pill); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+    .tag-free { background: rgba(110,231,183,0.12); color: var(--mint); border: 1px solid rgba(110,231,183,0.25); }
+
+    /* FAQ */
+    .faq-section { position: relative; z-index: 1; padding: 0 24px 80px; }
+    .faq-list { max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+    .faq-item { border-radius: var(--radius-lg); border: 1px solid var(--border); background: rgba(255,255,255,0.03); overflow: hidden; transition: border-color var(--transition), background var(--transition); }
+    .faq-item.open { border-color: rgba(129,140,248,0.25); background: rgba(129,140,248,0.03); }
+    .faq-q { width: 100%; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; background: none; border: none; color: var(--text-primary); font-size: 0.95rem; font-weight: 600; text-align: left; cursor: pointer; font-family: inherit; line-height: 1.4; transition: color var(--transition); }
+    .faq-q:hover { color: var(--indigo); }
+    .faq-icon { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.06); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; color: var(--text-muted); transition: transform var(--transition), background var(--transition), border-color var(--transition), color var(--transition); }
+    .faq-item.open .faq-icon { transform: rotate(45deg); background: rgba(129,140,248,0.12); border-color: rgba(129,140,248,0.3); color: var(--indigo); }
+    .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1); }
+    .faq-item.open .faq-a { max-height: 300px; }
+    .faq-a-inner { padding: 16px 24px 20px; font-size: 0.9rem; color: var(--text-secondary); line-height: 1.75; border-top: 1px solid rgba(255,255,255,0.04); }
+
+    /* FOOTER */
+    .footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 60px 24px 40px; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+    .footer-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; font-size: 1.1rem; font-weight: 700; margin-bottom: 14px; }
+    .footer-logo-icon { width: 32px; height: 32px; border-radius: 9px; background: var(--gradient-btn); display: flex; align-items: center; justify-content: center; font-size: 15px; }
+    .footer-tagline { font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; max-width: 220px; }
+    .footer-col-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 14px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.88rem; transition: color var(--transition); }
+    .footer-links a:hover { color: var(--peach); }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; padding-top: 24px; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 12px; }
+    .footer-copy { font-size: 0.82rem; color: var(--text-muted); }
+    .footer-love { font-size: 0.82rem; color: var(--text-muted); }
+    .footer-love span { color: #f87171; }
+
+    /* SCROLL REVEAL */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* TOASTER */
+    .toaster { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: rgba(30,28,45,0.95); border: 1px solid rgba(110,231,183,0.3); color: var(--mint); padding: 12px 24px; border-radius: var(--radius-pill); font-size: 0.88rem; font-weight: 600; backdrop-filter: blur(20px); z-index: 999; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease; opacity: 0; pointer-events: none; display: flex; align-items: center; gap: 8px; }
+    .toaster.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    @keyframes sparkle { 0%{transform:scale(0) rotate(0deg);opacity:1} 100%{transform:scale(1.5) rotate(180deg);opacity:0} }
+    .sparkle { position: absolute; pointer-events: none; font-size: 18px; animation: sparkle 0.7s ease forwards; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .hero { padding: 72px 24px 48px; }
+      .hero-stats { gap: 24px; }
+      .hero-divider { display: none; }
+      .calc-header { padding: 24px 20px 0; }
+      .calc-body { padding: 20px 20px 28px; }
+      .result-grid { grid-template-columns: repeat(3,1fr); gap: 10px; }
+      .stat-card { padding: 16px 10px; }
+      .stat-card-num { font-size: 1.4rem; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 28px; }
+      .footer-brand { grid-column: 1 / -1; }
+    }
+    @media (max-width: 480px) {
+      .result-grid { grid-template-columns: 1fr 1fr; }
+      .age-grid { grid-template-columns: 1fr 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
+      .result-title-bar { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-blobs" aria-hidden="true">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div>
+  <div class="blob blob-3"></div><div class="blob blob-4"></div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon" aria-hidden="true">🌸</div>
+      <span class="nav-logo-text">BabyBloom</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Age Calculator</a></li>
+      <li><a href="due-date.html">Due Date</a></li>
+      <li><a href="sleep-calculator.html" class="active">Sleep</a></li>
+      <li><a href="feeding-calculator.html">Feeding</a></li>
+      <li><a href="#calculator" class="nav-cta">Get Schedule</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html">🍼 Age Calculator</a>
+    <a href="due-date.html">🤰 Due Date</a>
+    <a href="sleep-calculator.html">😴 Sleep Calculator</a>
+    <a href="feeding-calculator.html">🥄 Feeding Schedule</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" role="banner">
+  <div class="hero-badge">
+    <span class="hero-badge-dot" aria-hidden="true"></span>
+    Baby Sleep Calculator
+  </div>
+  <h1>Better Sleep<br /><span class="gradient-text">Starts Here</span></h1>
+  <p>Get a science-based, personalized sleep schedule for your baby — with nap times, wake windows, and the perfect bedtime.</p>
+  <div class="hero-stats" aria-label="Sleep statistics">
+    <div class="hero-stat"><div class="hero-stat-num">14–17h</div><div class="hero-stat-label">Newborn Sleep</div></div>
+    <div class="hero-divider" aria-hidden="true"></div>
+    <div class="hero-stat"><div class="hero-stat-num">2–4</div><div class="hero-stat-label">Daily Naps</div></div>
+    <div class="hero-divider" aria-hidden="true"></div>
+    <div class="hero-stat"><div class="hero-stat-num">7PM</div><div class="hero-stat-label">Ideal Bedtime</div></div>
+  </div>
+</header>
+
+<!-- CALCULATOR -->
+<section class="calc-section" id="calculator" aria-labelledby="calc-heading">
+  <article class="calc-card">
+    <div class="calc-header">
+      <div class="calc-icon" aria-hidden="true">😴</div>
+      <div class="calc-header-text">
+        <h2 id="calc-heading">Sleep Schedule Calculator</h2>
+        <p>Select your baby's age and morning wake time</p>
+      </div>
+    </div>
+    <div class="calc-body">
+      <!-- Age selector -->
+      <div class="input-group">
+        <div class="input-label"><span>👶</span> Baby's Age Group</div>
+        <div class="age-grid" role="radiogroup" aria-label="Baby's age group">
+          <div class="age-option">
+            <input type="radio" name="age" id="age-0" value="0-3" checked />
+            <label for="age-0"><span class="age-option-emoji">🌙</span><span class="age-option-label">0–3 Months</span><span class="age-option-sub">Newborn</span></label>
+          </div>
+          <div class="age-option">
+            <input type="radio" name="age" id="age-4" value="4-6" />
+            <label for="age-4"><span class="age-option-emoji">🐣</span><span class="age-option-label">4–6 Months</span><span class="age-option-sub">Infant</span></label>
+          </div>
+          <div class="age-option">
+            <input type="radio" name="age" id="age-7" value="7-9" />
+            <label for="age-7"><span class="age-option-emoji">🌱</span><span class="age-option-label">7–9 Months</span><span class="age-option-sub">Older Infant</span></label>
+          </div>
+          <div class="age-option">
+            <input type="radio" name="age" id="age-10" value="10-12" />
+            <label for="age-10"><span class="age-option-emoji">🚶</span><span class="age-option-label">10–12 Months</span><span class="age-option-sub">Late Infant</span></label>
+          </div>
+          <div class="age-option">
+            <input type="radio" name="age" id="age-13" value="13-18" />
+            <label for="age-13"><span class="age-option-emoji">🧒</span><span class="age-option-label">13–18 Months</span><span class="age-option-sub">Young Toddler</span></label>
+          </div>
+          <div class="age-option">
+            <input type="radio" name="age" id="age-19" value="19-36" />
+            <label for="age-19"><span class="age-option-emoji">⭐</span><span class="age-option-label">19–36 Months</span><span class="age-option-sub">Toddler</span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Wake time -->
+      <div class="input-group">
+        <label class="input-label" for="wake-time"><span>☀️</span> Morning Wake-Up Time</label>
+        <input type="time" id="wake-time" class="time-input" value="07:00" aria-describedby="wake-error" />
+        <div class="input-error" id="wake-error" role="alert"><span>⚠️</span><span>Please enter a valid wake time.</span></div>
+      </div>
+
+      <button class="calc-btn" onclick="calculateSleep()" type="button" aria-label="Generate sleep schedule">
+        <span class="calc-btn-inner">
+          <span class="calc-btn-icon" aria-hidden="true">✨</span>
+          Generate Sleep Schedule
+        </span>
+      </button>
+    </div>
+  </article>
+</section>
+
+<!-- RESULTS -->
+<section class="result-section" id="resultSection" aria-labelledby="result-heading" aria-live="polite">
+  <div class="result-inner">
+    <div class="result-title-bar">
+      <div class="result-title"><span aria-hidden="true">😴</span><h2 id="result-heading">Your Baby's Sleep Plan</h2></div>
+      <button class="copy-btn" id="copyBtn" onclick="copyResult()" type="button">
+        <span id="copyIcon">📋</span><span id="copyText">Copy Schedule</span>
+      </button>
+    </div>
+
+    <div class="result-grid" role="region" aria-label="Sleep statistics">
+      <div class="stat-card indigo" tabindex="0">
+        <span class="stat-card-icon" aria-hidden="true">😴</span>
+        <div class="stat-card-num" id="res-total">0h</div>
+        <div class="stat-card-label">Total Sleep</div>
+        <div class="stat-card-sub">per 24 hours</div>
+      </div>
+      <div class="stat-card peach" tabindex="0">
+        <span class="stat-card-icon" aria-hidden="true">☀️</span>
+        <div class="stat-card-num" id="res-naps">0</div>
+        <div class="stat-card-label">Daily Naps</div>
+        <div class="stat-card-sub" id="res-nap-dur"></div>
+      </div>
+      <div class="stat-card lilac" tabindex="0">
+        <span class="stat-card-icon" aria-hidden="true">🌙</span>
+        <div class="stat-card-num" id="res-night">0h</div>
+        <div class="stat-card-label">Night Sleep</div>
+        <div class="stat-card-sub" id="res-night-sub"></div>
+      </div>
+    </div>
+
+    <!-- Details -->
+    <div class="detail-card" role="region" aria-label="Sleep details">
+      <div class="detail-row">
+        <div class="detail-key"><div class="detail-key-dot indigo"></div>Wake Window</div>
+        <div class="detail-val" id="d-wake-window">—</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-key"><div class="detail-key-dot peach"></div>Ideal Bedtime</div>
+        <div class="detail-val" id="d-bedtime">—</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-key"><div class="detail-key-dot lilac"></div>Expected Night Wakings</div>
+        <div class="detail-val" id="d-wakings">—</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-key"><div class="detail-key-dot mint"></div>Nap Sleep Goal</div>
+        <div class="detail-val" id="d-nap-goal">—</div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="schedule-card" role="region" aria-label="Daily sleep schedule timeline">
+      <div class="schedule-title"><span aria-hidden="true">📋</span> Daily Schedule Timeline</div>
+      <div class="timeline" id="timeline"></div>
+    </div>
+
+    <!-- Tips -->
+    <div class="tips-card" role="region" aria-label="Sleep tips">
+      <div class="tips-title"><span aria-hidden="true">💡</span> Sleep Tips for This Age</div>
+      <div id="tips-list"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section class="tools-section" id="tools" aria-labelledby="tools-heading">
+  <div class="section-header reveal">
+    <div class="section-badge">Related Tools</div>
+    <h2 class="section-title" id="tools-heading">More <span class="gradient-text">Baby Tools</span></h2>
+    <p class="section-sub">Everything you need to care for your little one — all in one place.</p>
+  </div>
+  <div class="tools-grid">
+    <a href="index.html" class="tool-card tool-card-1 reveal">
+      <span class="tool-tag tag-free">Free</span>
+      <div class="tool-icon tool-icon-1" aria-hidden="true">👶</div>
+      <div class="tool-name">Baby Age Calculator</div>
+      <div class="tool-desc">Calculate your baby's exact age in days, weeks, and months with a live real-time counter.</div>
+      <div class="tool-link tool-link-1">Calculate Age →</div>
+    </a>
+    <a href="due-date.html" class="tool-card tool-card-2 reveal">
+      <span class="tool-tag tag-free">Free</span>
+      <div class="tool-icon tool-icon-2" aria-hidden="true">🤰</div>
+      <div class="tool-name">Due Date Calculator</div>
+      <div class="tool-desc">Calculate your estimated due date from your LMP or conception date with trimester tracking.</div>
+      <div class="tool-link tool-link-2">Find Due Date →</div>
+    </a>
+    <a href="feeding-calculator.html" class="tool-card tool-card-3 reveal">
+      <span class="tool-tag tag-free">Free</span>
+      <div class="tool-icon tool-icon-3" aria-hidden="true">🍼</div>
+      <div class="tool-name">Feeding Schedule</div>
+      <div class="tool-desc">Build the perfect feeding plan for breastfed or formula-fed babies based on their current age.</div>
+      <div class="tool-link tool-link-3">Plan Feeds →</div>
+    </a>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section" id="faq" aria-labelledby="faq-heading">
+  <div class="section-header reveal">
+    <div class="section-badge">FAQ</div>
+    <h2 class="section-title" id="faq-heading">Sleep <span class="gradient-text">Questions</span></h2>
+    <p class="section-sub">Common questions about baby sleep schedules and wake windows.</p>
+  </div>
+  <div class="faq-list" role="list">
+    <div class="faq-item" role="listitem">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">How much sleep does a newborn need?<span class="faq-icon" aria-hidden="true">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Newborns (0–3 months) need 14–17 hours of sleep per day, including frequent naps. They sleep in short 2–4 hour cycles and wake to feed. It's normal for newborns to have no set schedule in the early weeks — their sleep-wake cycles aren't yet tied to day and night.</div></div>
+    </div>
+    <div class="faq-item" role="listitem">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">What is a wake window for babies?<span class="faq-icon" aria-hidden="true">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">A wake window is the amount of time a baby can comfortably stay awake between sleep periods before becoming overtired. Wake windows grow as babies get older — from just 45–60 minutes for newborns to 4–6 hours for toddlers. Respecting wake windows helps babies fall asleep more easily.</div></div>
+    </div>
+    <div class="faq-item" role="listitem">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">When do babies drop to one nap?<span class="faq-icon" aria-hidden="true">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Most babies transition from 2 naps to 1 nap between 14–18 months. Signs include resisting one of the naps, difficulty falling asleep at bedtime, or naps getting shorter. The transition is usually complete by 18 months, though some babies keep 2 naps until closer to 18 months.</div></div>
+    </div>
+    <div class="faq-item" role="listitem">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">What is the ideal bedtime for a baby?<span class="faq-icon" aria-hidden="true">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Most babies do best with a bedtime between 6:30–8:00 PM. Babies have a natural melatonin surge in the early evening, making this the ideal window. An overtired baby who misses this window may fight sleep harder — known as getting a "second wind."</div></div>
+    </div>
+    <div class="faq-item" role="listitem">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">How do I know if my baby is overtired?<span class="faq-icon" aria-hidden="true">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Signs of an overtired baby include rubbing eyes, pulling ears, yawning, staring blankly, becoming fussy or clingy, arching their back, or hyperactivity. Catching your baby at the first signs of tiredness and putting them down before they become overtired helps them fall asleep much more easily.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="footer-logo">
+          <div class="footer-logo-icon" aria-hidden="true">🌸</div>
+          <span class="gradient-text" style="font-size:1.1rem;font-weight:700;">BabyBloom</span>
+        </a>
+        <p class="footer-tagline">Premium free tools for modern parents — beautifully designed, scientifically accurate.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Tools</div>
+        <ul class="footer-links">
+          <li><a href="index.html">Age Calculator</a></li>
+          <li><a href="due-date.html">Due Date Calculator</a></li>
+          <li><a href="sleep-calculator.html">Sleep Calculator</a></li>
+          <li><a href="feeding-calculator.html">Feeding Schedule</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Resources</div>
+        <ul class="footer-links">
+          <li><a href="#">Milestone Guide</a></li>
+          <li><a href="#">Vaccination Chart</a></li>
+          <li><a href="#">Growth Tracker</a></li>
+          <li><a href="#">Baby Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 BabyBloom. All rights reserved.</div>
+      <div class="footer-love">Made with <span>♥</span> for every parent</div>
+    </div>
+  </div>
+</footer>
+
+<div class="toaster" id="toaster" role="status" aria-live="polite">
+  <span>✅</span><span id="toaster-msg">Copied!</span>
+</div>
+
+<script>
+  /* NAVBAR */
+  const navbar = document.getElementById('navbar');
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 20));
+  hamburger.addEventListener('click', () => {
+    const open = mobileMenu.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+  });
+
+  window.addEventListener('DOMContentLoaded', initScrollReveal);
+
+  /* ── SLEEP DATA by age group ── */
+  const SLEEP_DATA = {
+    '0-3': {
+      label: 'Newborn (0–3 months)',
+      totalSleep: 16, nightSleep: 8.5, napCount: 4, napDuration: 45,
+      wakeWindow: '45–60 min', bedtimeHour: 21, wakings: '3–5 times',
+      napGoal: '7–8 hrs / day',
+      tips: [
+        { icon: '🌙', text: 'Newborns have no circadian rhythm yet — darkness and white noise help establish day/night.' },
+        { icon: '👐', text: 'Swaddling mimics the womb and can significantly extend sleep periods.' },
+        { icon: '⏰', text: 'Watch for tired cues (eye rubbing, yawning) within 45–60 minutes of last wake.' },
+        { icon: '🍼', text: 'Feed-play-sleep cycles work well — feed when they wake, not to sleep.' },
+      ]
+    },
+    '4-6': {
+      label: '4–6 Months',
+      totalSleep: 15, nightSleep: 10, napCount: 3, napDuration: 60,
+      wakeWindow: '1.5–2.5 hrs', bedtimeHour: 19.5, wakings: '1–3 times',
+      napGoal: '4–5 hrs / day',
+      tips: [
+        { icon: '📅', text: 'A consistent nap schedule becomes possible around 4 months as circadian rhythms mature.' },
+        { icon: '🌙', text: 'Move bedtime earlier to 6:30–8 PM — this helps babies sleep longer at night.' },
+        { icon: '🔊', text: 'White noise continues to help block out household sounds during naps.' },
+        { icon: '😴', text: 'Sleep regression around 4 months is normal — stay consistent with your routine.' },
+      ]
+    },
+    '7-9': {
+      label: '7–9 Months',
+      totalSleep: 14, nightSleep: 11, napCount: 2, napDuration: 75,
+      wakeWindow: '2.5–3.5 hrs', bedtimeHour: 19, wakings: '0–2 times',
+      napGoal: '3 hrs / day',
+      tips: [
+        { icon: '✌️', text: 'Two naps per day (morning and afternoon) works best for this age group.' },
+        { icon: '📖', text: 'A consistent bedtime routine (bath, book, song) signals sleep is coming.' },
+        { icon: '🛏', text: 'Putting baby down drowsy but awake helps them learn to self-settle.' },
+        { icon: '🍽', text: 'Introducing solids around 6 months helps but shouldn\'t replace milk feeds for sleep.' },
+      ]
+    },
+    '10-12': {
+      label: '10–12 Months',
+      totalSleep: 13.5, nightSleep: 11, napCount: 2, napDuration: 60,
+      wakeWindow: '3–4 hrs', bedtimeHour: 19, wakings: '0–1 times',
+      napGoal: '2–3 hrs / day',
+      tips: [
+        { icon: '🔒', text: 'Consistency is key — keep nap and bedtime within 30 min of the same time daily.' },
+        { icon: '🌅', text: 'Ensure the first nap doesn\'t start too early — wait at least 3 hours after wake-up.' },
+        { icon: '🌙', text: 'Bedtime of 7–7:30 PM protects against overtiredness if naps are short.' },
+        { icon: '🛁', text: 'A warm bath before bed lowers core body temperature and promotes drowsiness.' },
+      ]
+    },
+    '13-18': {
+      label: '13–18 Months',
+      totalSleep: 13, nightSleep: 11.5, napCount: 1, napDuration: 90,
+      wakeWindow: '4–5 hrs', bedtimeHour: 19, wakings: '0 times',
+      napGoal: '1.5 hrs / day',
+      tips: [
+        { icon: '🔄', text: 'Transition from 2 naps to 1 nap typically happens between 14–18 months.' },
+        { icon: '⏰', text: 'Move the single nap to midday (12–1 PM) once the transition is complete.' },
+        { icon: '🧸', text: 'A comfort object (lovey/stuffed animal) can help toddlers self-soothe overnight.' },
+        { icon: '📺', text: 'Avoid screens at least 1 hour before bed — blue light suppresses melatonin.' },
+      ]
+    },
+    '19-36': {
+      label: '19–36 Months (Toddler)',
+      totalSleep: 12, nightSleep: 11, napCount: 1, napDuration: 60,
+      wakeWindow: '5–6 hrs', bedtimeHour: 19.5, wakings: '0 times',
+      napGoal: '1 hr / day',
+      tips: [
+        { icon: '📅', text: 'Some toddlers drop their nap around 2.5–3 years — quiet time replaces it.' },
+        { icon: '🌙', text: 'Keep bedtime around 7–8 PM even if nap is dropped — toddlers need 11–12 hrs night sleep.' },
+        { icon: '⚡', text: 'A consistent, calm bedtime routine of 20–30 minutes helps toddlers transition to sleep.' },
+        { icon: '🛡', text: 'Night fears are common at this age — a nightlight and reassurance go a long way.' },
+      ]
+    }
+  };
+
+  let lastSchedule = null;
+
+  function getSelectedAge() {
+    const checked = document.querySelector('input[name="age"]:checked');
+    return checked ? checked.value : '0-3';
+  }
+
+  function addMinutes(baseHour, mins) {
+    const totalMins = Math.round(baseHour * 60) + mins;
+    const h = Math.floor(totalMins / 60) % 24;
+    const m = totalMins % 60;
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const h12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
+    return `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
+  }
+
+  function parseWakeTime(val) {
+    const [h, m] = val.split(':').map(Number);
+    return h + m / 60;
+  }
+
+  function calculateSleep() {
+    const wakeVal = document.getElementById('wake-time').value;
+    if (!wakeVal) {
+      document.getElementById('wake-error').classList.add('show');
+      document.getElementById('wake-time').classList.add('error');
+      return;
+    }
+    document.getElementById('wake-error').classList.remove('show');
+    document.getElementById('wake-time').classList.remove('error');
+
+    const ageKey = getSelectedAge();
+    const data = SLEEP_DATA[ageKey];
+    const wakeHour = parseWakeTime(wakeVal);
+
+    // Build schedule
+    const schedule = buildSchedule(data, wakeHour);
+    lastSchedule = { data, schedule };
+
+    // Render stats
+    document.getElementById('res-total').textContent  = data.totalSleep + 'h';
+    document.getElementById('res-naps').textContent   = data.napCount;
+    document.getElementById('res-nap-dur').textContent= `~${data.napDuration} min each`;
+    document.getElementById('res-night').textContent  = data.nightSleep + 'h';
+    document.getElementById('res-night-sub').textContent = 'night sleep';
+    document.getElementById('d-wake-window').textContent = data.wakeWindow;
+    document.getElementById('d-bedtime').textContent     = addMinutes(data.bedtimeHour, 0);
+    document.getElementById('d-wakings').textContent     = data.wakings;
+    document.getElementById('d-nap-goal').textContent    = data.napGoal;
+
+    // Timeline
+    renderTimeline(schedule);
+
+    // Tips
+    renderTips(data.tips);
+
+    // Show results
+    const rs = document.getElementById('resultSection');
+    rs.classList.add('show');
+    document.querySelectorAll('.stat-card-num').forEach(el => { el.style.animation='none'; el.offsetHeight; el.style.animation='numberPop 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards'; });
+    setTimeout(() => rs.scrollIntoView({ behavior:'smooth', block:'start' }), 100);
+    spawnSparkles(document.querySelector('.calc-btn'));
+  }
+
+  function buildSchedule(data, wakeHour) {
+    const items = [];
+    let cursor = wakeHour;
+    const ww = data.napCount >= 4 ? 0.83 :
+               data.napCount >= 3 ? 1.75 :
+               data.napCount >= 2 ? 2.75 :
+               data.napCount === 1 ? 4.5 : 5;
+    const napDurHrs = data.napDuration / 60;
+
+    items.push({ type:'wake', time: cursor, label:'☀️ Morning Wake-Up', desc:`Start the day! Wake window begins (${data.wakeWindow})`, badge:'wake' });
+
+    for (let i = 0; i < data.napCount; i++) {
+      cursor += ww;
+      items.push({ type:'nap', time: cursor, label:`😴 Nap ${i+1}`, desc:`~${data.napDuration} minutes of restorative day sleep`, badge:'nap' });
+      cursor += napDurHrs;
+      if (i < data.napCount - 1) {
+        items.push({ type:'wake', time: cursor, label:'🌤 Wake from Nap', desc:`Stay awake for ${data.wakeWindow}`, badge:'wake' });
+      }
+    }
+
+    // Last wake before bed
+    items.push({ type:'wake', time: cursor, label:'🌅 Last Wake Period', desc:'Final awake stretch before bedtime', badge:'wake' });
+    const bedtime = Math.min(data.bedtimeHour, cursor + (data.napCount > 2 ? 1.25 : data.napCount === 2 ? 2.5 : data.napCount === 1 ? 5 : 5.5));
+    items.push({ type:'bed', time: bedtime, label:'🌙 Bedtime', desc:'Consistent bedtime routine: bath, book, bed', badge:'bed' });
+
+    const nextWake = bedtime + data.nightSleep;
+    items.push({ type:'wake', time: nextWake > 24 ? nextWake - 24 : nextWake, label:'☀️ Next Morning Wake', desc:'End of night sleep — new day begins!', badge:'night' });
+
+    return items;
+  }
+
+  function renderTimeline(schedule) {
+    const tl = document.getElementById('timeline');
+    tl.innerHTML = schedule.map(item => {
+      const displayTime = addMinutes(item.time, 0);
+      return `
+        <div class="timeline-item">
+          <div class="timeline-left">
+            <div class="timeline-dot ${item.type === 'nap' ? 'nap' : item.type === 'bed' ? 'bed' : 'wake'}"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-time">${displayTime}</div>
+            <div class="timeline-label">${item.label}</div>
+            <div class="timeline-desc">${item.desc}</div>
+            <span class="timeline-badge badge-${item.badge}">${item.badge}</span>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function renderTips(tips) {
+    document.getElementById('tips-list').innerHTML = tips.map(t =>
+      `<div class="tip-item"><div class="tip-icon">${t.icon}</div><div class="tip-text">${t.text}</div></div>`
+    ).join('');
+  }
+
+  /* COPY */
+  function copyResult() {
+    if (!lastSchedule) return;
+    const { data, schedule } = lastSchedule;
+    const lines = [`🌸 BabyBloom – Baby Sleep Schedule`, `👶 Age: ${data.label}`, `😴 Total Sleep: ${data.totalSleep}h/day`, `🌙 Night Sleep: ${data.nightSleep}h`, `☀️ Daily Naps: ${data.napCount} nap(s)`, ``, `📋 Daily Schedule:`];
+    schedule.forEach(s => lines.push(`  ${addMinutes(s.time,0)} – ${s.label}`));
+    lines.push(`\nGenerated at babybloom.app`);
+    navigator.clipboard.writeText(lines.join('\n')).then(() => {
+      document.getElementById('copyBtn').classList.add('copied');
+      document.getElementById('copyIcon').textContent = '✅';
+      document.getElementById('copyText').textContent = 'Copied!';
+      showToast('Schedule copied to clipboard!');
+      setTimeout(() => {
+        document.getElementById('copyBtn').classList.remove('copied');
+        document.getElementById('copyIcon').textContent = '📋';
+        document.getElementById('copyText').textContent = 'Copy Schedule';
+      }, 2500);
+    });
+  }
+
+  /* HELPERS */
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => { i.classList.remove('open'); i.querySelector('.faq-q').setAttribute('aria-expanded','false'); });
+    if (!isOpen) { item.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
+  }
+  let toastTimeout;
+  function showToast(msg) {
+    const t = document.getElementById('toaster');
+    document.getElementById('toaster-msg').textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+  function spawnSparkles(el) {
+    const icons = ['✨','🌸','⭐','💫','😴'];
+    const rect = el.getBoundingClientRect();
+    for (let i = 0; i < 6; i++) {
+      setTimeout(() => {
+        const s = document.createElement('div');
+        s.className = 'sparkle';
+        s.textContent = icons[Math.floor(Math.random()*icons.length)];
+        s.style.cssText = `left:${rect.left+Math.random()*rect.width}px;top:${rect.top+window.scrollY-10+Math.random()*30}px;position:absolute;z-index:999;`;
+        document.body.appendChild(s);
+        setTimeout(() => s.remove(), 800);
+      }, i * 80);
+    }
+  }
+  function initScrollReveal() {
+    const els = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry,i) => {
+        if (entry.isIntersecting) { setTimeout(() => entry.target.classList.add('visible'), i*100); io.unobserve(entry.target); }
+      });
+    }, { threshold: 0.12 });
+    els.forEach(el => io.observe(el));
+  }
+</script>
+</body>
+</html>

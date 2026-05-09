@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Baby Feeding Schedule Calculator – By Age & Method | BabyBloom</title>
+  <meta name="description" content="Generate a personalized baby feeding schedule by age. Calculate how often to feed, how much formula or breast milk per feeding, and get a full daily feeding plan — free and science-based." />
+  <meta name="keywords" content="baby feeding schedule, baby feeding calculator, how much formula per feeding, breastfeeding schedule, infant feeding guide, newborn feeding frequency" />
+  <meta property="og:title" content="Baby Feeding Schedule Calculator – BabyBloom" />
+  <meta property="og:description" content="Personalized feeding schedule by age — formula amounts, breastfeeding frequency, and a full daily plan. Free." />
+  <meta property="og:type" content="website" />
+  <link rel="canonical" href="https://babybloom.app/feeding-calculator" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How often should I feed my newborn?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Newborns should be fed every 2–3 hours, or 8–12 times per day. They have tiny stomachs and breast milk or formula is digested quickly. Never let a newborn go more than 4 hours without feeding in the early weeks."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How much formula does a baby need per feeding?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A general rule is 2.5 oz of formula per pound of body weight per day. For example, a 10-pound baby needs about 25 oz per day, spread across 6–8 feedings (roughly 3–4 oz per feeding). Always follow your pediatrician's guidance for your specific baby."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "When should I start solid foods?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The American Academy of Pediatrics recommends starting solid foods around 6 months of age. Signs of readiness include sitting up with minimal support, showing interest in food, and loss of the tongue-thrust reflex. Start with single-ingredient purees and introduce one new food every 3–5 days."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I know if my baby is getting enough milk?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Signs that your baby is well-fed include 6+ wet diapers per day after the first week, regular bowel movements, steady weight gain, appearing satisfied after feedings, and alert and active behavior when awake. If you're concerned, consult your pediatrician or a lactation consultant."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is cluster feeding?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Cluster feeding is when a baby feeds very frequently over a short period, often in the evening. It's common in breastfed newborns and during growth spurts. Cluster feeding helps stimulate milk supply and is normal behavior, not a sign of insufficient milk."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-deep:       #0d0d14;
+      --bg-card:       rgba(255,255,255,0.04);
+      --bg-card-hover: rgba(255,255,255,0.07);
+      --border:        rgba(255,255,255,0.08);
+      --border-glow:   rgba(255,180,150,0.35);
+      --peach:         #ffb49a;
+      --peach-2:       #ffd4c2;
+      --peach-dark:    #e8845e;
+      --lilac:         #c4b5fd;
+      --lilac-2:       #a78bfa;
+      --lilac-dark:    #7c3aed;
+      --pink:          #f9a8d4;
+      --mint:          #6ee7b7;
+      --sky:           #7dd3fc;
+      --amber:         #fbbf24;
+      --text-primary:  #f0edf8;
+      --text-secondary:#b0a8c8;
+      --text-muted:    #6b6580;
+      --gradient-hero: linear-gradient(135deg, #ffb49a 0%, #c4b5fd 50%, #f9a8d4 100%);
+      --gradient-btn:  linear-gradient(135deg, #ffb49a 0%, #e879a0 50%, #a78bfa 100%);
+      --shadow-glow:   0 0 40px rgba(255,180,150,0.15), 0 0 80px rgba(196,181,253,0.1);
+      --radius-lg:     20px;
+      --radius-xl:     28px;
+      --radius-pill:   999px;
+      --transition:    0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg-deep); color: var(--text-primary); min-height: 100vh; overflow-x: hidden; line-height: 1.6; }
+
+    /* BLOBS */
+    .bg-blobs { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.18; animation: blobFloat 18s ease-in-out infinite alternate; }
+    .blob-1 { width: 520px; height: 520px; background: #ffb49a; top: -120px; left: -120px; animation-duration: 20s; }
+    .blob-2 { width: 440px; height: 440px; background: #fbbf24; top: 30%; right: -100px; animation-duration: 25s; animation-delay: -5s; }
+    .blob-3 { width: 380px; height: 380px; background: #6ee7b7; bottom: 10%; left: 20%; animation-duration: 22s; animation-delay: -10s; }
+    .blob-4 { width: 300px; height: 300px; background: #f9a8d4; bottom: -80px; right: 15%; animation-duration: 28s; animation-delay: -8s; }
+    @keyframes blobFloat { 0%{transform:translate(0,0) scale(1)} 33%{transform:translate(30px,-40px) scale(1.05)} 66%{transform:translate(-20px,30px) scale(0.97)} 100%{transform:translate(10px,-20px) scale(1.03)} }
+
+    /* UTILITY */
+    .gradient-text { background: var(--gradient-hero); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+
+    /* NAVBAR */
+    .navbar { position: sticky; top: 0; z-index: 100; background: rgba(13,13,20,0.75); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 0 24px; transition: box-shadow var(--transition); }
+    .navbar.scrolled { box-shadow: 0 4px 40px rgba(0,0,0,0.4); }
+    .nav-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 68px; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
+    .nav-logo-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--gradient-btn); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .nav-logo-text { background: var(--gradient-hero); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .nav-links { display: flex; align-items: center; gap: 8px; list-style: none; }
+    .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 8px 14px; border-radius: var(--radius-pill); transition: color var(--transition), background var(--transition); }
+    .nav-links a:hover { color: var(--text-primary); background: rgba(255,255,255,0.06); }
+    .nav-links a.active { color: var(--text-primary); background: rgba(255,255,255,0.06); }
+    .nav-cta { background: var(--gradient-btn) !important; color: #fff !important; padding: 8px 20px !important; border-radius: var(--radius-pill) !important; font-weight: 600 !important; box-shadow: 0 4px 20px rgba(255,100,100,0.3); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 6px; border: none; background: none; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--text-primary); border-radius: 2px; transition: var(--transition); }
+    .mobile-menu { display: none; flex-direction: column; gap: 4px; padding: 12px 0 16px; border-top: 1px solid var(--border); }
+    .mobile-menu a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 500; padding: 10px 16px; border-radius: 12px; transition: color var(--transition), background var(--transition); }
+    .mobile-menu a:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+    .mobile-menu.open { display: flex; }
+
+    /* HERO */
+    .hero { position: relative; z-index: 1; text-align: center; padding: 96px 24px 64px; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 18px; border-radius: var(--radius-pill); border: 1px solid rgba(251,191,36,0.3); background: rgba(251,191,36,0.08); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--amber); margin-bottom: 28px; animation: fadeDown 0.7s ease both; }
+    .hero-badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--amber); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+    .hero h1 { font-size: clamp(2.4rem, 6vw, 4.2rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 20px; animation: fadeDown 0.7s 0.1s ease both; }
+    .hero p { font-size: clamp(1rem, 2.5vw, 1.2rem); color: var(--text-secondary); max-width: 540px; margin: 0 auto 36px; line-height: 1.7; animation: fadeDown 0.7s 0.2s ease both; }
+    .hero-stats { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; animation: fadeDown 0.7s 0.3s ease both; }
+    .hero-stat { text-align: center; }
+    .hero-stat-num { font-size: 1.6rem; font-weight: 800; background: var(--gradient-hero); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-stat-label { font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+    .hero-divider { width: 1px; height: 40px; background: var(--border); align-self: center; }
+
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn   { from{opacity:0} to{opacity:1} }
+    @keyframes numberPop{ 0%{transform:scale(0.5);opacity:0} 70%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
+
+    /* CALC */
+    .calc-section { position: relative; z-index: 1; padding: 0 24px 80px; }
+    .calc-card { max-width: 680px; margin: 0 auto; border-radius: var(--radius-xl); border: 1px solid var(--border); background: rgba(255,255,255,0.03); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); box-shadow: var(--shadow-glow), 0 40px 80px rgba(0,0,0,0.4); overflow: hidden; animation: fadeUp 0.7s 0.3s ease both; }
+    .calc-header { padding: 32px 36px 0; display: flex; align-items: center; gap: 14px; }
+    .calc-icon { width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg,#fbbf24,#ffb49a); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; box-shadow: 0 8px 24px rgba(251,191,36,0.35); }
+    .calc-header-text h2 { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; }
+    .calc-header-text p { font-size: 0.85rem; color: var(--text-muted); margin-top: 2px; }
+    .calc-body { padding: 28px 36px 36px; }
+
+    /* TABS */
+    .method-tabs { display: flex; gap: 8px; margin-bottom: 24px; background: rgba(255,255,255,0.04); border-radius: 14px; padding: 5px; }
+    .method-tab { flex: 1; padding: 10px 16px; border-radius: 10px; border: none; background: none; color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: all var(--transition); text-align: center; }
+    .method-tab.active { background: rgba(251,191,36,0.15); color: var(--amber); box-shadow: 0 2px 12px rgba(251,191,36,0.12); }
+    .method-tab:hover:not(.active) { color: var(--text-primary); background: rgba(255,255,255,0.04); }
+
+    /* INPUT */
+    .input-group { margin-bottom: 20px; }
+    .input-label { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+
+    /* Number input styled */
+    .num-input { width: 100%; padding: 16px 20px; background: rgba(255,255,255,0.05); border: 1.5px solid var(--border); border-radius: var(--radius-lg); color: var(--text-primary); font-size: 1.05rem; font-family: inherit; font-weight: 500; outline: none; transition: border-color var(--transition), box-shadow var(--transition); appearance: none; -webkit-appearance: none; }
+    .num-input:focus { border-color: var(--amber); box-shadow: 0 0 0 4px rgba(251,191,36,0.12); background: rgba(255,255,255,0.07); }
+    .num-input.error { border-color: #f87171; }
+
+    /* Age selector grid */
+    .age-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
+    .age-option { position: relative; }
+    .age-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+    .age-option label { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 14px 12px; border-radius: var(--radius-lg); border: 1.5px solid var(--border); background: rgba(255,255,255,0.04); cursor: pointer; transition: all var(--transition); text-align: center; gap: 4px; }
+    .age-option label:hover { border-color: rgba(251,191,36,0.4); background: rgba(251,191,36,0.06); }
+    .age-option input:checked + label { border-color: rgba(251,191,36,0.6); background: rgba(251,191,36,0.1); box-shadow: 0 0 0 3px rgba(251,191,36,0.1); }
+    .age-option-emoji { font-size: 22px; }
+    .age-option-label { font-size: 0.85rem; font-weight: 700; color: var(--text-primary); }
+    .age-option-sub { font-size: 0.72rem; color: var(--text-muted); }
+    .age-option input:checked + label .age-option-label { color: var(--amber); }
+
+    /* Unit toggle */
+    .unit-toggle { display: flex; gap: 8px; }
+    .unit-btn { flex: 1; padding: 10px; border-radius: 12px; border: 1.5px solid var(--border); background: rgba(255,255,255,0.04); color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: all var(--transition); }
+    .unit-btn.active { border-color: rgba(251,191,36,0.5); background: rgba(251,191,36,0.1); color: var(--amber); }
+    .unit-btn:hover:not(.active) { border-color: rgba(255,255,255,0.15); color: var(--text-primary); }
+
+    .input-error { display: none; font-size: 0.8rem; color: #f87171; margin-top: 8px; padding-left: 4px; align-items: center; gap: 6px; }
+    .input-error.show { display: flex; animation: fadeIn 0.3s ease; }
+
+    .calc-btn { width: 100%; padding: 17px 24px; border-radius: var(--radius-lg); background: var(--gradient-btn); color: #fff; font-size: 1rem; font-weight: 700; letter-spacing: 0.02em; border: none; cursor: pointer; position: relative; overflow: hidden; transition: transform var(--transition), box-shadow var(--transition); box-shadow: 0 8px 30px rgba(200,100,120,0.4); }
+    .calc-btn::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg,rgba(255,255,255,0.15),transparent); opacity: 0; transition: opacity var(--transition); }
+    .calc-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(200,100,120,0.5); }
+    .calc-btn:hover::before { opacity: 1; }
+    .calc-btn:active { transform: translateY(0); }
+    .calc-btn-inner { display: flex; align-items: center; justify-content: center; gap: 10px; pointer-events: none; }
+    .calc-btn-icon { font-size: 18px; transition: transform var(--transition); }
+    .calc-btn:hover .calc-btn-icon { transform: scale(1.2) rotate(-5deg); }
+
+    /* RESULT */
+    .result-section { display: none; padding: 0 24px 80px; position: relative; z-index: 1; }
+    .result-section.show { display: block; animation: fadeUp 0.6s ease both; }
+    .result-inner { max-width: 680px; margin: 0 auto; }
+
+    .result-title-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 12px; flex-wrap: wrap; }
+    .result-title { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
+    .copy-btn { display: flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: var(--radius-pill); background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--text-secondary); font-size: 0.82rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: all var(--transition); }
+    .copy-btn:hover { background: rgba(196,181,253,0.12); border-color: rgba(196,181,253,0.4); color: var(--lilac); transform: translateY(-1px); }
+    .copy-btn.copied { background: rgba(110,231,183,0.12); border-color: rgba(110,231,183,0.4); color: var(--mint); }
+
+    .result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+    .stat-card { border-radius: var(--radius-lg); border: 1px solid var(--border); background: rgba(255,255,255,0.04); padding: 22px 18px; text-align: center; cursor: default; transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition), background var(--transition); position: relative; overflow: hidden; }
+    .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; opacity: 0; transition: opacity var(--transition); }
+    .stat-card.peach::before  { background: linear-gradient(90deg,#ffb49a,#f9a8d4); }
+    .stat-card.amber::before  { background: linear-gradient(90deg,#fbbf24,#f97316); }
+    .stat-card.mint::before   { background: linear-gradient(90deg,#6ee7b7,#34d399); }
+    .stat-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.14); background: rgba(255,255,255,0.07); box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+    .stat-card:hover::before { opacity: 1; }
+    .stat-card-icon { font-size: 26px; margin-bottom: 10px; display: block; }
+    .stat-card-num { font-size: clamp(1.6rem,4vw,2.2rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; margin-bottom: 6px; }
+    .stat-card.peach .stat-card-num { background: linear-gradient(135deg,#ffb49a,#f9a8d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .stat-card.amber .stat-card-num { background: linear-gradient(135deg,#fbbf24,#f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .stat-card.mint  .stat-card-num { background: linear-gradient(135deg,#6ee7b7,#34d399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .stat-card-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; }
+    .stat-card-sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* Detail card */
+    .detail-card { border-radius: var(--radius-lg); border: 1px solid var(--border); background: rgba(255,255,255,0.03); padding: 20px 24px; margin-bottom: 14px; }
+    .detail-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .detail-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .detail-row:first-child { padding-top: 0; }
+    .detail-key { font-size: 0.88rem; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
+    .detail-key-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .detail-key-dot.peach { background: var(--peach); }
+    .detail-key-dot.lilac { background: var(--lilac); }
+    .detail-key-dot.mint  { background: var(--mint); }
+    .detail-key-dot.amber { background: var(--amber); }
+    .detail-key-dot.pink  { background: var(--pink); }
+    .detail-val { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); text-align: right; }
+
+    /* Feeding schedule table */
+    .schedule-card { border-radius: var(--radius-lg); border: 1px solid var(--border); background: rgba(255,255,255,0.03); padding: 24px; margin-bottom: 14px; }
+    .schedule-title { font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .feed-table { width: 100%; border-collapse: collapse; }
+    .feed-table th { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); padding: 0 12px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+    .feed-table td { padding: 13px 12px; font-size: 0.88rem; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+    .feed-table tr:last-child td { border-bottom: none; }
+    .feed-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .feed-num { font-weight: 700; color: var(--amber); font-size: 0.82rem; }
+    .feed-time { font-weight: 600; color: var(--text-primary); }
+    .feed-amount { font-weight: 700; color: var(--peach); }
+    .feed-note { font-size: 0.78rem; color: var(--text-muted); }
+    .feed-badge { display: inline-block; padding: 3px 8px; border-radius: var(--radius-pill); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; background: rgba(251,191,36,0.1); color: var(--amber); border: 1px solid rgba(251,191,36,0.2); }
+
+    /* Tips */
+    .tips-card { border-radius: var(--radius-lg); border: 1px solid var(--border); background: rgba(255,255,255,0.03); padding: 20px 24px; margin-bottom: 14px; }
+    .tips-title { font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .tip-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .tip-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .tip-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .tip-text { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5; }
+
+    /* SOLIDS CALLOUT */
+    .solids-card { border-radius: var(--radius-lg); border: 1px solid rgba(110,231,183,0.25); background: rgba(110,231,183,0.04); padding: 18px 24px; margin-bottom: 14px; display: none; }
+    .solids-card.show { display: block; }
+    .solids-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .solids-icon { font-size: 22px; }
+    .solids-title { font-size: 0.88rem; font-weight: 700; color: var(--mint); }
+    .solids-text { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
+
+    /* TOOLS */
+    .tools-section { position: relative; z-index: 1; padding: 0 24px 80px; }
+    .section-header { text-align: center; margin-bottom: 48px; }
+    .section-badge { display: inline-block; padding: 5px 16px; border-radius: var(--radius-pill); background: rgba(196,181,253,0.1); border: 1px solid rgba(196,181,253,0.25); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--lilac); margin-bottom: 16px; }
+    .section-title { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 12px; }
+    .section-sub { font-size: 1rem; color: var(--text-secondary); max-width: 480px; margin: 0 auto; }
+    .tools-grid { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+    .tool-card { border-radius: var(--radius-xl); border: 1px solid var(--border); background: rgba(255,255,255,0.03); padding: 28px; cursor: pointer; transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition), background var(--transition); position: relative; overflow: hidden; text-decoration: none; color: inherit; display: block; }
+    .tool-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 120px; opacity: 0; transition: opacity var(--transition); border-radius: 0 0 var(--radius-xl) var(--radius-xl); }
+    .tool-card-1::after { background: radial-gradient(ellipse at bottom, rgba(255,180,150,0.08), transparent); }
+    .tool-card-2::after { background: radial-gradient(ellipse at bottom, rgba(196,181,253,0.08), transparent); }
+    .tool-card-3::after { background: radial-gradient(ellipse at bottom, rgba(110,231,183,0.08), transparent); }
+    .tool-card:hover { transform: translateY(-6px); border-color: rgba(255,255,255,0.12); background: rgba(255,255,255,0.06); box-shadow: 0 24px 60px rgba(0,0,0,0.35); }
+    .tool-card:hover::after { opacity: 1; }
+    .tool-icon { width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 18px; position: relative; z-index: 1; }
+    .tool-icon-1 { background: linear-gradient(135deg,rgba(255,180,150,0.2),rgba(249,168,212,0.2)); border: 1px solid rgba(255,180,150,0.25); }
+    .tool-icon-2 { background: linear-gradient(135deg,rgba(196,181,253,0.2),rgba(167,139,250,0.2)); border: 1px solid rgba(196,181,253,0.25); }
+    .tool-icon-3 { background: linear-gradient(135deg,rgba(110,231,183,0.2),rgba(52,211,153,0.2)); border: 1px solid rgba(110,231,183,0.25); }
+    .tool-name { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; position: relative; z-index: 1; }
+    .tool-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 18px; position: relative; z-index: 1; }
+    .tool-link { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; position: relative; z-index: 1; transition: gap var(--transition); }
+    .tool-link-1 { color: var(--peach); } .tool-link-2 { color: var(--lilac); } .tool-link-3 { color: var(--mint); }
+    .tool-card:hover .tool-link { gap: 10px; }
+    .tool-tag { position: absolute; top: 18px; right: 18px; padding: 4px 10px; border-radius: var(--radius-pill); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+    .tag-free { background: rgba(110,231,183,0.12); color: var(--mint); border: 1px solid rgba(110,231,183,0.25); }
+
+    /* FAQ */
+    .faq-section { position: relative; z-index: 1; padding: 0 24px 80px; }
+    .faq-list { max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+    .faq-item { border-radius: var(--radius-lg); border: 1px solid var(--border); background: rgba(255,255,255,0.03); overflow: hidden; transition: border-color var(--transition), background var(--transition); }
+    .faq-item.open { border-color: rgba(251,191,36,0.25); background: rgba(251,191,36,0.03); }
+    .faq-q { width: 100%; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; background: none; border: none; color: var(--text-primary); font-size: 0.95rem; font-weight: 600; text-align: left; cursor: pointer; font-family: inherit; line-height: 1.4; transition: color var(--transition); }
+    .faq-q:hover { color: var(--amber); }
+    .faq-icon { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.06); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; color: var(--text-muted); transition: transform var(--transition), background var(--transition), border-color var(--transition), color var(--transition); }
+    .faq-item.open .faq-icon { transform: rotate(45deg); background: rgba(251,191,36,0.12); border-color: rgba(251,191,36,0.3); color: var(--amber); }
+    .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1); }
+    .faq-item.open .faq-a { max-height: 300px; }
+    .faq-a-inner { padding: 16px 24px 20px; font-size: 0.9rem; color: var(--text-secondary); line-height: 1.75; border-top: 1px solid rgba(255,255,255,0.04); }
+
+    /* FOOTER */
+    .footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 60px 24px 40px; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+    .footer-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; font-size: 1.1rem; font-weight: 700; margin-bottom: 14px; }
+    .footer-logo-icon { width: 32px; height: 32px; border-radius: 9px; background: var(--gradient-btn); display: flex; align-items: center; justify-content: center; font-size: 15px; }
+    .footer-tagline { font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; max-width: 220px; }
+    .footer-col-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 14px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.88rem; transition: color var(--transition); }
+    .footer-links a:hover { color: var(--peach); }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; padding-top: 24px; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 12px; }
+    .footer-copy { font-size: 0.82rem; color: var(--text-muted); }
+    .footer-love { font-size: 0.82rem; color: var(--text-muted); }
+    .footer-love span { color: #f87171; }
+
+    /* SCROLL REVEAL */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* TOASTER */
+    .toaster { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: rgba(30,28,45,0.95); border: 1px solid rgba(110,231,183,0.3); color: var(--mint); padding: 12px 24px; border-radius: var(--radius-pill); font-size: 0.88rem; font-weight: 600; backdrop-filter: blur(20px); z-index: 999; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease; opacity: 0; pointer-events: none; display: flex; align-items: center; gap: 8px; }
+    .toaster.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    @keyframes sparkle { 0%{transform:scale(0) rotate(0deg);opacity:1} 100%{transform:scale(1.5) rotate(180deg);opacity:0} }
+    .sparkle { position: absolute; pointer-events: none; font-size: 18px; animation: sparkle 0.7s ease forwards; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .hero { padding: 72px 24px 48px; }
+      .hero-stats { gap: 24px; }
+      .hero-divider { display: none; }
+      .calc-header { padding: 24px 20px 0; }
+      .calc-body { padding: 20px 20px 28px; }
+      .result-grid { grid-template-columns: repeat(3,1fr); gap: 10px; }
+      .stat-card { padding: 16px 10px; }
+      .stat-card-num { font-size: 1.4rem; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 28px; }
+      .footer-brand { grid-column: 1 / -1; }
+      .feed-table th:last-child, .feed-table td:last-child { display: none; }
+    }
+    @media (max-width: 480px) {
+      .result-grid { grid-template-columns: 1fr 1fr; }
+      .age-grid { grid-template-columns: 1fr 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
+      .result-title-bar { flex-direction: column; align-items: flex-start; }
+      .method-tabs { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-blobs" aria-hidden="true">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div>
+  <div class="blob blob-3"></div><div class="blob blob-4"></div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon" aria-hidden="true">🌸</div>
+      <span class="nav-logo-text">BabyBloom</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Age Calculator</a></li>
+      <li><a href="due-date.html">Due Date</a></li>
+      <li><a href="sleep-calculator.html">Sleep</a></li>
+      <li><a href="feeding-calculator.html" class="active">Feeding</a></li>
+      <li><a href="#calculator" class="nav-cta">Get Schedule</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html">🍼 Age Calculator</a>
+    <a href="due-date.html">🤰 Due Date</a>
+    <a href="sleep-calculator.html">😴 Sleep Calculator</a>
+    <a href="feeding-calculator.html">🥄 Feeding Schedule</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" role="banner">
+  <div class="hero-badge">
+    <span class="hero-badge-dot" aria-hidden="true"></span>
+    Baby Feeding Schedule Calculator
+  </div>
+  <h1>Nourish Your Baby<br /><span class="gradient-text">The Right Way</span></h1>
+  <p>Generate a personalized feeding schedule by age — with amounts, timing, and expert-backed guidance for breastfed and formula-fed babies.</p>
+  <div class="hero-stats" aria-label="Feeding statistics">
+    <div class="hero-stat"><div class="hero-stat-num">8–12×</div><div class="hero-stat-label">Newborn Feeds/Day</div></div>
+    <div class="hero-divider" aria-hidden="true"></div>
+    <div class="hero-stat"><div class="hero-stat-num">6 mo</div><div class="hero-stat-label">Solids Start</div></div>
+    <div class="hero-divider" aria-hidden="true"></div>
+    <div class="hero-stat"><div class="hero-stat-num">24 oz</div><div class="hero-stat-label">Avg Daily Formula</div></div>
+  </div>
+</header>
+
+<!-- CALCULATOR -->
+<section class="calc-section" id="calculator" aria-labelledby="calc-heading">
+  <article class="calc-card">
+    <div class="calc-header">
+      <div class="calc-icon" aria-hidden="true">🍼</div>
+      <div class="calc-header-text">
+        <h2 id="calc-heading">Feeding Schedule Calculator</h2>
+        <p>Choose feeding method and your baby's age</p>
+      </div>
+    </div>
+    <div class="calc-body">
+      <!-- Feeding method tabs -->
+      <div class="method-tabs" role="tablist" aria-label="Feeding method">
+        <button class="method-tab active" role="tab" aria-selected="true" id="tab-formula" onclick="switchTab('formula')">
+          🍼 Formula
+        </button>
+        <button class="method-tab" role="tab" aria-selected="false" id="tab-breast" onclick="switchTab('breast')">
+          🤱 Breastfeeding
+        </button>
+      </div>
+
+      <!-- Baby age -->
+      <div class="input-group">
+        <div class="input-label"><span>👶</span> Baby's Age Group</div>
+        <div class="age-grid" role="radiogroup" aria-label="Baby age group">
+          <div class="age-option">
+            <input type="radio" name="feed-age" id="fa-0" value="0-1" checked />
+            <label for="fa-0"><span class="age-option-emoji">🌙</span><span class="age-option-label">0–4 Weeks</span><span class="age-option-sub">Newborn</span></label>
+          </div>
+          <div class="age-option">
+            <input type="radio" name="feed-age" id="fa-1" value="1-3" />
+            <label for="fa-1"><span class="age-option-emoji">🌱</span><span class="age-option-label">1–3 Months</span><span class="age-option-sub">Early Infant</span></label>
+          </div>
+          <div class="age-option">
+            <input type="radio" name="feed-age" id="fa-4" value="4-5" />
+            <label for="fa-4"><span class="age-option-emoji">🐣</span><span class="age-option-label">4–5 Months</span><span class="age-option-sub">Infant</span></label>
+          </div>
+          <div class="age-option">
+            <input type="radio" name="feed-age" id="fa-6" value="6-8" />
+            <label for="fa-6"><span class="age-option-emoji">🥄</span><span class="age-option-label">6–8 Months</span><span class="age-option-sub">Solids Begin</span></label>
+          </div>
+          <div class="age-option">
+            <input type="radio" name="feed-age" id="fa-9" value="9-11" />
+            <label for="fa-9"><span class="age-option-emoji">🍌</span><span class="age-option-label">9–11 Months</span><span class="age-option-sub">More Solids</span></label>
+          </div>
+          <div class="age-option">
+            <input type="radio" name="feed-age" id="fa-12" value="12+" />
+            <label for="fa-12"><span class="age-option-emoji">🧒</span><span class="age-option-label">12+ Months</span><span class="age-option-sub">Toddler</span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formula-only: weight input -->
+      <div id="weight-group">
+        <div class="input-group">
+          <label class="input-label" for="baby-weight"><span>⚖️</span> Baby's Current Weight</label>
+          <input type="number" id="baby-weight" class="num-input" placeholder="e.g. 10" min="3" max="30" step="0.5" aria-describedby="weight-error" />
+          <div class="input-error" id="weight-error" role="alert"><span>⚠️</span><span>Please enter a valid weight.</span></div>
+        </div>
+        <div class="input-group">
+          <div class="input-label"><span>📐</span> Weight Unit</div>
+          <div class="unit-toggle">
+            <button type="button" class="unit-btn active" id="unit-lbs" onclick="setUnit('lbs')">lbs</button>
+            <button type="button" class="unit-btn" id="unit-kg" onclick="setUnit('kg')">kg</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="calc-btn" onclick="calculateFeeding()" type="button" aria-label="Generate feeding schedule">
+        <span class="calc-btn-inner">
+          <span class="calc-btn-icon" aria-hidden="true">✨</span>
+          Generate Feeding Schedule
+        </span>
+      </button>
+    </div>
+  </article>
+</section>
+
+<!-- RESULTS -->
+<section class="result-section" id="resultSection" aria-labelledby="result-heading" aria-live="polite">
+  <div class="result-inner">
+    <div class="result-title-bar">
+      <div class="result-title"><span aria-hidden="true">🍼</span><h2 id="result-heading">Your Baby's Feeding Plan</h2></div>
+      <button class="copy-btn" id="copyBtn" onclick="copyResult()" type="button">
+        <span id="copyIcon">📋</span><span id="copyText">Copy Schedule</span>
+      </button>
+    </div>
+
+    <div class="result-grid" role="region" aria-label="Feeding statistics">
+      <div class="stat-card amber" tabindex="0">
+        <span class="stat-card-icon" aria-hidden="true">🍼</span>
+        <div class="stat-card-num" id="res-feeds">0</div>
+        <div class="stat-card-label">Feeds / Day</div>
+        <div class="stat-card-sub" id="res-feed-sub"></div>
+      </div>
+      <div class="stat-card peach" tabindex="0">
+        <span class="stat-card-icon" aria-hidden="true">💧</span>
+        <div class="stat-card-num" id="res-per-feed">0</div>
+        <div class="stat-card-label">Per Feed</div>
+        <div class="stat-card-sub" id="res-per-feed-sub"></div>
+      </div>
+      <div class="stat-card mint" tabindex="0">
+        <span class="stat-card-icon" aria-hidden="true">📊</span>
+        <div class="stat-card-num" id="res-daily">0</div>
+        <div class="stat-card-label">Daily Total</div>
+        <div class="stat-card-sub" id="res-daily-sub"></div>
+      </div>
+    </div>
+
+    <!-- Details -->
+    <div class="detail-card" role="region" aria-label="Feeding details">
+      <div class="detail-row">
+        <div class="detail-key"><div class="detail-key-dot amber"></div>Feeding Frequency</div>
+        <div class="detail-val" id="d-frequency">—</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-key"><div class="detail-key-dot peach"></div>Amount Per Feed</div>
+        <div class="detail-val" id="d-amount">—</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-key"><div class="detail-key-dot mint"></div>Daily Volume</div>
+        <div class="detail-val" id="d-daily-vol">—</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-key"><div class="detail-key-dot lilac"></div>Night Feedings</div>
+        <div class="detail-val" id="d-night">—</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-key"><div class="detail-key-dot pink"></div>Feeding Method</div>
+        <div class="detail-val" id="d-method">—</div>
+      </div>
+    </div>
+
+    <!-- Solids callout -->
+    <div class="solids-card" id="solids-card" role="region" aria-label="Solid foods information">
+      <div class="solids-header">
+        <div class="solids-icon">🥄</div>
+        <div class="solids-title">Solid Foods Introduction</div>
+      </div>
+      <div class="solids-text" id="solids-text"></div>
+    </div>
+
+    <!-- Schedule table -->
+    <div class="schedule-card" role="region" aria-label="Daily feeding schedule">
+      <div class="schedule-title"><span aria-hidden="true">📋</span> Sample Daily Feeding Schedule</div>
+      <table class="feed-table" aria-label="Feeding schedule">
+        <thead>
+          <tr>
+            <th>Feed #</th>
+            <th>Time</th>
+            <th>Amount</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="feed-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- Tips -->
+    <div class="tips-card" role="region" aria-label="Feeding tips">
+      <div class="tips-title"><span aria-hidden="true">💡</span> Feeding Tips for This Stage</div>
+      <div id="tips-list"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section class="tools-section" id="tools" aria-labelledby="tools-heading">
+  <div class="section-header reveal">
+    <div class="section-badge">Related Tools</div>
+    <h2 class="section-title" id="tools-heading">More <span class="gradient-text">Baby Tools</span></h2>
+    <p class="section-sub">Everything you need to care for your little one — all in one place.</p>
+  </div>
+  <div class="tools-grid">
+    <a href="index.html" class="tool-card tool-card-1 reveal">
+      <span class="tool-tag tag-free">Free</span>
+      <div class="tool-icon tool-icon-1" aria-hidden="true">👶</div>
+      <div class="tool-name">Baby Age Calculator</div>
+      <div class="tool-desc">Calculate your baby's exact age in days, weeks, and months with a live real-time counter.</div>
+      <div class="tool-link tool-link-1">Calculate Age →</div>
+    </a>
+    <a href="due-date.html" class="tool-card tool-card-2 reveal">
+      <span class="tool-tag tag-free">Free</span>
+      <div class="tool-icon tool-icon-2" aria-hidden="true">🤰</div>
+      <div class="tool-name">Due Date Calculator</div>
+      <div class="tool-desc">Calculate your estimated due date from your LMP or conception date with trimester tracking.</div>
+      <div class="tool-link tool-link-2">Find Due Date →</div>
+    </a>
+    <a href="sleep-calculator.html" class="tool-card tool-card-3 reveal">
+      <span class="tool-tag tag-free">Free</span>
+      <div class="tool-icon tool-icon-3" aria-hidden="true">😴</div>
+      <div class="tool-name">Baby Sleep Calculator</div>
+      <div class="tool-desc">Get a personalized sleep schedule with nap times, wake windows, and the perfect bedtime.</div>
+      <div class="tool-link tool-link-3">Plan Sleep →</div>
+    </a>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section" id="faq" aria-labelledby="faq-heading">
+  <div class="section-header reveal">
+    <div class="section-badge">FAQ</div>
+    <h2 class="section-title" id="faq-heading">Feeding <span class="gradient-text">Questions</span></h2>
+    <p class="section-sub">Common questions about baby feeding schedules and amounts.</p>
+  </div>
+  <div class="faq-list" role="list">
+    <div class="faq-item" role="listitem">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">How often should I feed my newborn?<span class="faq-icon" aria-hidden="true">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Newborns should be fed every 2–3 hours, or 8–12 times per day. They have tiny stomachs and breast milk or formula is digested quickly. Never let a newborn go more than 4 hours without feeding in the early weeks, as they need frequent nutrition for healthy growth.</div></div>
+    </div>
+    <div class="faq-item" role="listitem">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">How much formula does a baby need per feeding?<span class="faq-icon" aria-hidden="true">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">A general rule is 2.5 oz of formula per pound of body weight per day. For example, a 10-pound baby needs about 25 oz per day, spread across 6–8 feedings (roughly 3–4 oz per feeding). Always follow your pediatrician's guidance for your specific baby's needs.</div></div>
+    </div>
+    <div class="faq-item" role="listitem">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">When should I start solid foods?<span class="faq-icon" aria-hidden="true">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">The AAP recommends starting solid foods around 6 months. Signs of readiness include sitting up with minimal support, showing interest in food, and loss of the tongue-thrust reflex. Start with single-ingredient purees and introduce one new food every 3–5 days to watch for allergies.</div></div>
+    </div>
+    <div class="faq-item" role="listitem">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">How do I know if my baby is getting enough milk?<span class="faq-icon" aria-hidden="true">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Signs that your baby is well-fed include 6+ wet diapers per day after the first week, regular bowel movements, steady weight gain, appearing satisfied after feedings, and alert and active behavior when awake. If you're concerned, consult your pediatrician or a lactation consultant.</div></div>
+    </div>
+    <div class="faq-item" role="listitem">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">What is cluster feeding?<span class="faq-icon" aria-hidden="true">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Cluster feeding is when a baby feeds very frequently over a short period, often in the evening. It's common in breastfed newborns and during growth spurts. Cluster feeding helps stimulate milk supply and is completely normal — not a sign of insufficient milk production.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="footer-logo">
+          <div class="footer-logo-icon" aria-hidden="true">🌸</div>
+          <span class="gradient-text" style="font-size:1.1rem;font-weight:700;">BabyBloom</span>
+        </a>
+        <p class="footer-tagline">Premium free tools for modern parents — beautifully designed, scientifically accurate.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Tools</div>
+        <ul class="footer-links">
+          <li><a href="index.html">Age Calculator</a></li>
+          <li><a href="due-date.html">Due Date Calculator</a></li>
+          <li><a href="sleep-calculator.html">Sleep Calculator</a></li>
+          <li><a href="feeding-calculator.html">Feeding Schedule</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Resources</div>
+        <ul class="footer-links">
+          <li><a href="#">Milestone Guide</a></li>
+          <li><a href="#">Vaccination Chart</a></li>
+          <li><a href="#">Growth Tracker</a></li>
+          <li><a href="#">Baby Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 BabyBloom. All rights reserved.</div>
+      <div class="footer-love">Made with <span>♥</span> for every parent</div>
+    </div>
+  </div>
+</footer>
+
+<div class="toaster" id="toaster" role="status" aria-live="polite">
+  <span>✅</span><span id="toaster-msg">Copied!</span>
+</div>
+
+<script>
+  /* NAVBAR */
+  const navbar = document.getElementById('navbar');
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 20));
+  hamburger.addEventListener('click', () => {
+    const open = mobileMenu.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  window.addEventListener('DOMContentLoaded', initScrollReveal);
+
+  /* STATE */
+  let activeMethod = 'formula';
+  let activeUnit = 'lbs';
+  let lastResult = null;
+
+  /* TAB */
+  function switchTab(tab) {
+    activeMethod = tab;
+    document.getElementById('tab-formula').classList.toggle('active', tab === 'formula');
+    document.getElementById('tab-breast').classList.toggle('active', tab === 'breast');
+    document.getElementById('tab-formula').setAttribute('aria-selected', tab === 'formula');
+    document.getElementById('tab-breast').setAttribute('aria-selected', tab === 'breast');
+    document.getElementById('weight-group').style.display = tab === 'formula' ? 'block' : 'none';
+  }
+
+  /* UNIT */
+  function setUnit(u) {
+    activeUnit = u;
+    document.getElementById('unit-lbs').classList.toggle('active', u === 'lbs');
+    document.getElementById('unit-kg').classList.toggle('active', u === 'kg');
+  }
+
+  /* FEEDING DATA by age key */
+  const FEED_DATA = {
+    '0-1': {
+      label: 'Newborn (0–4 Weeks)',
+      feedings: 10, intervalHrs: 2.5,
+      formulaPerFeedOz: [1, 2], breastMinPerSide: [10, 15],
+      ageMultiplier: 2.5, nightFeeds: '3–4 times',
+      solids: false,
+      tips: {
+        formula: [
+          { icon: '⏰', text: 'Feed every 2–3 hours — never let a newborn go more than 4 hours without feeding.' },
+          { icon: '🍼', text: 'Start with 1–2 oz per feeding and gradually increase as your baby signals hunger.' },
+          { icon: '🌙', text: 'Expect 3–4 night feedings — newborn stomachs are tiny and need frequent refills.' },
+          { icon: '💧', text: 'Watch for 6+ wet diapers daily as a sign your baby is feeding well.' },
+        ],
+        breast: [
+          { icon: '🤱', text: 'Feed on demand, every 2–3 hours. A nursing session typically lasts 10–20 minutes per side.' },
+          { icon: '⚡', text: 'Cluster feeding in the evening is normal and helps build your milk supply.' },
+          { icon: '🌙', text: 'Night feeds are crucial for milk supply in the early weeks — don\'t skip them.' },
+          { icon: '💧', text: '6+ wet diapers per day is the best sign your baby is getting enough milk.' },
+        ]
+      }
+    },
+    '1-3': {
+      label: '1–3 Months',
+      feedings: 8, intervalHrs: 3,
+      formulaPerFeedOz: [2, 4], breastMinPerSide: [10, 20],
+      ageMultiplier: 2.5, nightFeeds: '1–3 times',
+      solids: false,
+      tips: {
+        formula: [
+          { icon: '📈', text: 'Feed amounts increase as your baby grows — watch hunger cues rather than the clock.' },
+          { icon: '🔄', text: 'Babies may begin spacing feeds to every 3 hours as stomach capacity grows.' },
+          { icon: '💤', text: 'Some babies begin sleeping 4–5 hour stretches by 2–3 months — enjoy it!' },
+          { icon: '🍼', text: 'Burp baby after every 1–2 oz to prevent gas and spit-up.' },
+        ],
+        breast: [
+          { icon: '📅', text: 'Feedings may start spacing out to every 3 hours as your supply regulates.' },
+          { icon: '💪', text: 'Growth spurts at 3 weeks, 6 weeks, and 3 months may cause temporary increased demand.' },
+          { icon: '🕐', text: 'Sessions may get shorter (5–10 min) as your baby becomes a more efficient feeder.' },
+          { icon: '🥛', text: 'Continue nursing on demand — supply and demand keeps milk production strong.' },
+        ]
+      }
+    },
+    '4-5': {
+      label: '4–5 Months',
+      feedings: 6, intervalHrs: 3.5,
+      formulaPerFeedOz: [4, 6], breastMinPerSide: [10, 15],
+      ageMultiplier: 2.5, nightFeeds: '0–2 times',
+      solids: false,
+      tips: {
+        formula: [
+          { icon: '🎯', text: 'Most 4–5 month olds take 4–6 oz per feeding, 6 times per day.' },
+          { icon: '🌙', text: 'Many babies begin sleeping longer stretches at night — some through the night.' },
+          { icon: '🚫', text: 'Do not introduce solids yet — wait until 6 months unless advised by your pediatrician.' },
+          { icon: '📊', text: 'Total daily formula: 24–32 oz. Don\'t exceed 32 oz without consulting your doctor.' },
+        ],
+        breast: [
+          { icon: '🔄', text: 'Feeding pattern continues to regulate — expect 6–8 feeds per day around this age.' },
+          { icon: '⏱', text: 'Most sessions last just 5–15 minutes as efficiency increases.' },
+          { icon: '🌙', text: 'Night feeds may drop to 1–2 as baby sleeps longer — follow their lead.' },
+          { icon: '🍼', text: 'If returning to work, begin pumping 2–3 weeks before to build a milk freezer stash.' },
+        ]
+      }
+    },
+    '6-8': {
+      label: '6–8 Months',
+      feedings: 5, intervalHrs: 4,
+      formulaPerFeedOz: [6, 8], breastMinPerSide: [10, 15],
+      ageMultiplier: 2.5, nightFeeds: '0–1 times',
+      solids: true,
+      solidsText: 'Start introducing single-ingredient purees (sweet potato, peas, apple). Offer 1–2 tablespoons once per day, gradually increasing to 2–3 meals. Continue breast milk or formula as the primary nutrition source — solids are complementary at this stage.',
+      tips: {
+        formula: [
+          { icon: '🥄', text: 'Introduce single-ingredient purees — one new food every 3–5 days to spot allergies.' },
+          { icon: '🍼', text: 'Breast milk or formula remains primary nutrition — solids are "practice" at this age.' },
+          { icon: '⚖️', text: 'Aim for 24–32 oz of formula per day alongside 1–2 solid meals.' },
+          { icon: '🥛', text: 'Never add cereal to bottles — offer it by spoon to develop eating skills.' },
+        ],
+        breast: [
+          { icon: '🥄', text: 'Offer breast milk first, then solid foods — milk remains the nutritional priority.' },
+          { icon: '🌈', text: 'Introduce a variety of purees and mashed foods to develop palate early.' },
+          { icon: '🍎', text: 'Aim for 4–5 nursing sessions per day around 6–8 months.' },
+          { icon: '💧', text: 'You can offer small sips of water with solid meals — no juice before 12 months.' },
+        ]
+      }
+    },
+    '9-11': {
+      label: '9–11 Months',
+      feedings: 4, intervalHrs: 5,
+      formulaPerFeedOz: [7, 8], breastMinPerSide: [10, 15],
+      ageMultiplier: 2.5, nightFeeds: '0 times',
+      solids: true,
+      solidsText: 'Baby is ready for soft, mashed finger foods and textured purees. Offer 3 solid meals per day plus 1–2 snacks. Introduce common allergens (peanuts, eggs, dairy) intentionally. Baby-led weaning can complement or replace purees around this stage.',
+      tips: {
+        formula: [
+          { icon: '🍽', text: 'Offer 3 solid meals per day plus 1–2 snacks — variety is key for nutrition and preference.' },
+          { icon: '🤏', text: 'Soft finger foods help develop pincer grasp and self-feeding skills.' },
+          { icon: '🚰', text: 'Offer water in a sippy cup with meals — about 4–8 oz per day is fine.' },
+          { icon: '🍼', text: 'Maintain formula or breast milk feeds — don\'t switch to cow\'s milk until 12 months.' },
+        ],
+        breast: [
+          { icon: '🤱', text: 'Continue nursing 3–4 times per day — milk is still important alongside an expanding diet.' },
+          { icon: '🍝', text: 'Introduce a wide variety of tastes and textures to reduce pickiness later.' },
+          { icon: '🥜', text: 'Introduce top allergens (peanuts, eggs, fish, wheat) — early introduction reduces allergy risk.' },
+          { icon: '🌟', text: 'Baby-led weaning at this age helps develop confidence and independence with food.' },
+        ]
+      }
+    },
+    '12+': {
+      label: '12+ Months (Toddler)',
+      feedings: 3, intervalHrs: 5,
+      formulaPerFeedOz: [0, 0], breastMinPerSide: [10, 15],
+      ageMultiplier: 0, nightFeeds: '0 times',
+      solids: true,
+      solidsText: 'At 12 months, whole cow\'s milk (16–24 oz/day) replaces formula. Offer 3 balanced meals and 2–3 snacks daily. Toddlers may become picky — continue offering rejected foods without pressure. Breastfeeding can continue as long as both mother and child wish.',
+      tips: {
+        formula: [
+          { icon: '🥛', text: 'Switch from formula to whole cow\'s milk at 12 months — 16–24 oz per day maximum.' },
+          { icon: '🍽', text: 'Aim for 3 balanced meals and 2–3 snacks daily — include protein, fat, and carbs.' },
+          { icon: '🧃', text: 'Limit 100% juice to 4 oz per day max — offer water as the main drink.' },
+          { icon: '🌈', text: 'Picky eating is normal — keep offering a variety without pressure or rewards.' },
+        ],
+        breast: [
+          { icon: '🤱', text: 'Breastfeeding can continue beyond 12 months — WHO recommends up to 2 years and beyond.' },
+          { icon: '🥛', text: 'No need for formula — breast milk alongside a varied solid diet meets all needs.' },
+          { icon: '🍽', text: 'Offer 3 meals and 2–3 snacks — nursing as needed around this schedule.' },
+          { icon: '🌟', text: 'Toddler nursing is self-limiting — many wean naturally between 2–3 years.' },
+        ]
+      }
+    }
+  };
+
+  function getSelectedFeedAge() {
+    const checked = document.querySelector('input[name="feed-age"]:checked');
+    return checked ? checked.value : '0-1';
+  }
+
+  function addHoursToTime(startHour, addHrs) {
+    const totalMins = Math.round(startHour * 60 + addHrs * 60);
+    const h = Math.floor(totalMins / 60) % 24;
+    const m = totalMins % 60;
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const h12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
+    return `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
+  }
+
+  function calculateFeeding() {
+    const ageKey = getSelectedFeedAge();
+    const data = FEED_DATA[ageKey];
+
+    // Validate weight for formula
+    let weightLbs = null;
+    if (activeMethod === 'formula' && ageKey !== '12+') {
+      const wt = parseFloat(document.getElementById('baby-weight').value);
+      if (!wt || wt < 3 || wt > 30) {
+        document.getElementById('weight-error').classList.add('show');
+        document.getElementById('baby-weight').classList.add('error');
+        return;
+      }
+      document.getElementById('weight-error').classList.remove('show');
+      document.getElementById('baby-weight').classList.remove('error');
+      weightLbs = activeUnit === 'kg' ? wt * 2.205 : wt;
+    }
+
+    // Compute values
+    let feedCount = data.feedings;
+    let perFeedOz = 0, dailyOz = 0, perFeedLabel = '', dailyLabel = '';
+
+    if (activeMethod === 'formula') {
+      if (ageKey === '12+') {
+        dailyOz = 20; perFeedOz = 0;
+        perFeedLabel = 'Whole milk';
+        dailyLabel = '16–24 oz cow\'s milk/day';
+        feedCount = 3;
+      } else {
+        dailyOz = Math.min(32, Math.round(weightLbs * data.ageMultiplier));
+        perFeedOz = Math.round((dailyOz / feedCount) * 10) / 10;
+        const [minOz, maxOz] = data.formulaPerFeedOz;
+        perFeedOz = Math.max(minOz, Math.min(maxOz, perFeedOz));
+        dailyOz = Math.round(perFeedOz * feedCount);
+        perFeedLabel = `${perFeedOz} oz`;
+        dailyLabel = `${dailyOz} oz`;
+      }
+    } else {
+      const [minMin, maxMin] = data.breastMinPerSide;
+      perFeedLabel = `${minMin}–${maxMin} min/side`;
+      dailyLabel = `${feedCount} sessions`;
+    }
+
+    // Build schedule rows
+    const startHour = 7; // 7 AM
+    const rows = [];
+    for (let i = 0; i < feedCount; i++) {
+      const time = addHoursToTime(startHour, i * data.intervalHrs);
+      const isNight = i >= feedCount - 1;
+      const notes = i === 0 ? 'Morning feed' :
+                    i === feedCount - 1 ? 'Bedtime feed' :
+                    isNight && data.nightFeeds !== '0 times' ? 'May have night feed' : '—';
+      rows.push({ num: i+1, time, amount: activeMethod === 'formula' && ageKey !== '12+' ? `${perFeedOz} oz` : perFeedLabel, notes });
+    }
+
+    // Cache
+    lastResult = { data, feedCount, perFeedLabel, dailyLabel, ageKey, rows };
+
+    // Render stats
+    document.getElementById('res-feeds').textContent     = feedCount;
+    document.getElementById('res-feed-sub').textContent  = `every ${data.intervalHrs}h`;
+    document.getElementById('res-per-feed').textContent  = activeMethod === 'formula' && ageKey !== '12+' ? `${perFeedOz}oz` : `~${data.breastMinPerSide[0]}m`;
+    document.getElementById('res-per-feed-sub').textContent = activeMethod === 'formula' ? 'per bottle' : 'per side';
+    document.getElementById('res-daily').textContent     = activeMethod === 'formula' && ageKey !== '12+' ? `${dailyOz}oz` : `${feedCount}×`;
+    document.getElementById('res-daily-sub').textContent = activeMethod === 'formula' ? 'total formula' : 'daily feeds';
+
+    document.getElementById('d-frequency').textContent   = `Every ${data.intervalHrs} hours`;
+    document.getElementById('d-amount').textContent      = perFeedLabel;
+    document.getElementById('d-daily-vol').textContent   = dailyLabel;
+    document.getElementById('d-night').textContent       = data.nightFeeds;
+    document.getElementById('d-method').textContent      = activeMethod === 'formula' ? '🍼 Formula Feeding' : '🤱 Breastfeeding';
+
+    // Solids callout
+    const solidsCard = document.getElementById('solids-card');
+    if (data.solids) {
+      document.getElementById('solids-text').textContent = data.solidsText;
+      solidsCard.classList.add('show');
+    } else {
+      solidsCard.classList.remove('show');
+    }
+
+    // Table
+    const tbody = document.getElementById('feed-tbody');
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td><span class="feed-num">Feed ${r.num}</span></td>
+        <td><span class="feed-time">${r.time}</span></td>
+        <td><span class="feed-amount">${r.amount}</span></td>
+        <td><span class="feed-note">${r.notes}</span></td>
+      </tr>`).join('');
+
+    // Tips
+    const tips = data.tips[activeMethod];
+    document.getElementById('tips-list').innerHTML = tips.map(t =>
+      `<div class="tip-item"><div class="tip-icon">${t.icon}</div><div class="tip-text">${t.text}</div></div>`
+    ).join('');
+
+    // Show & animate
+    const rs = document.getElementById('resultSection');
+    rs.classList.add('show');
+    document.querySelectorAll('.stat-card-num').forEach(el => { el.style.animation='none'; el.offsetHeight; el.style.animation='numberPop 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards'; });
+    setTimeout(() => rs.scrollIntoView({ behavior:'smooth', block:'start' }), 100);
+    spawnSparkles(document.querySelector('.calc-btn'));
+  }
+
+  /* COPY */
+  function copyResult() {
+    if (!lastResult) return;
+    const { data, feedCount, perFeedLabel, dailyLabel, rows } = lastResult;
+    const lines = [
+      `🌸 BabyBloom – Baby Feeding Schedule`,
+      `👶 Age: ${data.label}`,
+      `🍼 Method: ${activeMethod === 'formula' ? 'Formula' : 'Breastfeeding'}`,
+      `📊 Feeds/Day: ${feedCount}`,
+      `💧 Per Feed: ${perFeedLabel}`,
+      `📈 Daily Total: ${dailyLabel}`,
+      ``, `📋 Schedule:`
+    ];
+    rows.forEach(r => lines.push(`  Feed ${r.num}: ${r.time} – ${r.amount}`));
+    lines.push(`\nGenerated at babybloom.app`);
+    navigator.clipboard.writeText(lines.join('\n')).then(() => {
+      document.getElementById('copyBtn').classList.add('copied');
+      document.getElementById('copyIcon').textContent = '✅';
+      document.getElementById('copyText').textContent = 'Copied!';
+      showToast('Schedule copied to clipboard!');
+      setTimeout(() => {
+        document.getElementById('copyBtn').classList.remove('copied');
+        document.getElementById('copyIcon').textContent = '📋';
+        document.getElementById('copyText').textContent = 'Copy Schedule';
+      }, 2500);
+    });
+  }
+
+  /* HELPERS */
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => { i.classList.remove('open'); i.querySelector('.faq-q').setAttribute('aria-expanded','false'); });
+    if (!isOpen) { item.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
+  }
+  let toastTimeout;
+  function showToast(msg) {
+    const t = document.getElementById('toaster');
+    document.getElementById('toaster-msg').textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+  function spawnSparkles(el) {
+    const icons = ['✨','🌸','⭐','💫','🍼'];
+    const rect = el.getBoundingClientRect();
+    for (let i = 0; i < 6; i++) {
+      setTimeout(() => {
+        const s = document.createElement('div');
+        s.className = 'sparkle';
+        s.textContent = icons[Math.floor(Math.random()*icons.length)];
+        s.style.cssText = `left:${rect.left+Math.random()*rect.width}px;top:${rect.top+window.scrollY-10+Math.random()*30}px;position:absolute;z-index:999;`;
+        document.body.appendChild(s);
+        setTimeout(() => s.remove(), 800);
+      }, i * 80);
+    }
+  }
+  function initScrollReveal() {
+    const els = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry,i) => {
+        if (entry.isIntersecting) { setTimeout(() => entry.target.classList.add('visible'), i*100); io.unobserve(entry.target); }
+      });
+    }, { threshold: 0.12 });
+    els.forEach(el => io.observe(el));
+  }
+</script>
+</body>
+</html>

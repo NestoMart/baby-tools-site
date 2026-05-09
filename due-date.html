@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pregnancy Due Date Calculator – Estimate Your EDD | BabyBloom</title>
+  <meta name="description" content="Calculate your pregnancy due date instantly. Enter your last menstrual period or conception date to get your estimated due date, trimester info, and week-by-week countdown." />
+  <meta name="keywords" content="due date calculator, pregnancy due date, EDD calculator, estimated due date, LMP calculator, pregnancy week calculator" />
+  <meta property="og:title" content="Pregnancy Due Date Calculator – BabyBloom" />
+  <meta property="og:description" content="Find your estimated due date, current trimester, and pregnancy countdown. Free, accurate, and beautifully designed." />
+  <meta property="og:type" content="website" />
+  <link rel="canonical" href="https://babybloom.app/due-date" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How is my due date calculated?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Your due date is calculated using Naegele's Rule: add 280 days (40 weeks) to the first day of your last menstrual period (LMP). If you know your conception date, we add 266 days (38 weeks) instead. Only about 5% of babies are born on their exact due date, so a window of 37–42 weeks is considered full term."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are the three trimesters of pregnancy?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The first trimester spans weeks 1–12, the second trimester weeks 13–26, and the third trimester weeks 27–40. Each trimester brings distinct developmental milestones for your baby and physical changes for you."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can my due date change after an ultrasound?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. An early ultrasound (before 14 weeks) can give a more accurate due date by measuring the baby's size. If there's more than a 5–7 day difference between the LMP-based date and the ultrasound date, your provider may adjust your due date."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What if I don't know my last menstrual period date?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "If you don't know your LMP, you can use your conception date instead — our calculator supports both methods. Alternatively, an early ultrasound performed by your healthcare provider is the most accurate way to establish a due date."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is 40 weeks exactly 9 months?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Not exactly. 40 weeks is actually closer to 9 months and 1 week. Pregnancy is measured in weeks rather than months because it's more precise. The 9-month figure is an approximation — counting from the LMP through delivery is 40 weeks or about 280 days."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-deep:       #0d0d14;
+      --bg-card:       rgba(255,255,255,0.04);
+      --bg-card-hover: rgba(255,255,255,0.07);
+      --border:        rgba(255,255,255,0.08);
+      --border-glow:   rgba(255,180,150,0.35);
+      --peach:         #ffb49a;
+      --peach-2:       #ffd4c2;
+      --peach-dark:    #e8845e;
+      --lilac:         #c4b5fd;
+      --lilac-2:       #a78bfa;
+      --lilac-dark:    #7c3aed;
+      --pink:          #f9a8d4;
+      --mint:          #6ee7b7;
+      --sky:           #7dd3fc;
+      --text-primary:  #f0edf8;
+      --text-secondary:#b0a8c8;
+      --text-muted:    #6b6580;
+      --gradient-hero: linear-gradient(135deg, #ffb49a 0%, #c4b5fd 50%, #f9a8d4 100%);
+      --gradient-btn:  linear-gradient(135deg, #ffb49a 0%, #e879a0 50%, #a78bfa 100%);
+      --shadow-glow:   0 0 40px rgba(255,180,150,0.15), 0 0 80px rgba(196,181,253,0.1);
+      --radius-lg:     20px;
+      --radius-xl:     28px;
+      --radius-pill:   999px;
+      --transition:    0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* BLOBS */
+    .bg-blobs { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.18; animation: blobFloat 18s ease-in-out infinite alternate; }
+    .blob-1 { width: 520px; height: 520px; background: #c4b5fd; top: -120px; left: -120px; animation-duration: 20s; }
+    .blob-2 { width: 440px; height: 440px; background: #ffb49a; top: 30%; right: -100px; animation-duration: 25s; animation-delay: -5s; }
+    .blob-3 { width: 380px; height: 380px; background: #f9a8d4; bottom: 10%; left: 20%; animation-duration: 22s; animation-delay: -10s; }
+    .blob-4 { width: 300px; height: 300px; background: #7dd3fc; bottom: -80px; right: 15%; animation-duration: 28s; animation-delay: -8s; }
+    @keyframes blobFloat {
+      0%   { transform: translate(0,0) scale(1); }
+      33%  { transform: translate(30px,-40px) scale(1.05); }
+      66%  { transform: translate(-20px,30px) scale(0.97); }
+      100% { transform: translate(10px,-20px) scale(1.03); }
+    }
+
+    /* UTILITY */
+    .gradient-text { background: var(--gradient-hero); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+
+    /* NAVBAR */
+    .navbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(13,13,20,0.75);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      transition: box-shadow var(--transition);
+    }
+    .navbar.scrolled { box-shadow: 0 4px 40px rgba(0,0,0,0.4); }
+    .nav-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 68px; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
+    .nav-logo-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--gradient-btn); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .nav-logo-text { background: var(--gradient-hero); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .nav-links { display: flex; align-items: center; gap: 8px; list-style: none; }
+    .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 8px 14px; border-radius: var(--radius-pill); transition: color var(--transition), background var(--transition); }
+    .nav-links a:hover { color: var(--text-primary); background: rgba(255,255,255,0.06); }
+    .nav-links a.active { color: var(--text-primary); background: rgba(255,255,255,0.06); }
+    .nav-cta { background: var(--gradient-btn) !important; color: #fff !important; padding: 8px 20px !important; border-radius: var(--radius-pill) !important; font-weight: 600 !important; box-shadow: 0 4px 20px rgba(255,100,100,0.3); }
+    .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(255,100,100,0.4) !important; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 6px; border: none; background: none; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--text-primary); border-radius: 2px; transition: var(--transition); }
+    .mobile-menu { display: none; flex-direction: column; gap: 4px; padding: 12px 0 16px; border-top: 1px solid var(--border); }
+    .mobile-menu a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 500; padding: 10px 16px; border-radius: 12px; transition: color var(--transition), background var(--transition); }
+    .mobile-menu a:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+    .mobile-menu.open { display: flex; }
+
+    /* HERO */
+    .hero { position: relative; z-index: 1; text-align: center; padding: 96px 24px 64px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 18px; border-radius: var(--radius-pill);
+      border: 1px solid rgba(196,181,253,0.3);
+      background: rgba(196,181,253,0.08);
+      font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--lilac);
+      margin-bottom: 28px; animation: fadeDown 0.7s ease both;
+    }
+    .hero-badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lilac); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+    .hero h1 { font-size: clamp(2.4rem, 6vw, 4.2rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 20px; animation: fadeDown 0.7s 0.1s ease both; }
+    .hero p { font-size: clamp(1rem, 2.5vw, 1.2rem); color: var(--text-secondary); max-width: 540px; margin: 0 auto 36px; line-height: 1.7; animation: fadeDown 0.7s 0.2s ease both; }
+    .hero-stats { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; animation: fadeDown 0.7s 0.3s ease both; }
+    .hero-stat { text-align: center; }
+    .hero-stat-num { font-size: 1.6rem; font-weight: 800; background: var(--gradient-hero); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-stat-label { font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+    .hero-divider { width: 1px; height: 40px; background: var(--border); align-self: center; }
+
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn   { from{opacity:0} to{opacity:1} }
+    @keyframes numberPop{ 0%{transform:scale(0.5);opacity:0} 70%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
+
+    /* CALC SECTION */
+    .calc-section { position: relative; z-index: 1; padding: 0 24px 80px; }
+    .calc-card {
+      max-width: 680px; margin: 0 auto;
+      border-radius: var(--radius-xl); border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+      box-shadow: var(--shadow-glow), 0 40px 80px rgba(0,0,0,0.4);
+      overflow: hidden; animation: fadeUp 0.7s 0.3s ease both;
+    }
+    .calc-header { padding: 32px 36px 0; display: flex; align-items: center; gap: 14px; }
+    .calc-icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      background: linear-gradient(135deg,#c4b5fd,#f9a8d4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+      box-shadow: 0 8px 24px rgba(196,181,253,0.35);
+    }
+    .calc-header-text h2 { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; }
+    .calc-header-text p { font-size: 0.85rem; color: var(--text-muted); margin-top: 2px; }
+    .calc-body { padding: 28px 36px 36px; }
+
+    /* TABS */
+    .method-tabs { display: flex; gap: 8px; margin-bottom: 24px; background: rgba(255,255,255,0.04); border-radius: 14px; padding: 5px; }
+    .method-tab {
+      flex: 1; padding: 10px 16px; border-radius: 10px; border: none;
+      background: none; color: var(--text-secondary);
+      font-size: 0.85rem; font-weight: 600; cursor: pointer;
+      font-family: inherit; transition: all var(--transition); text-align: center;
+    }
+    .method-tab.active {
+      background: rgba(196,181,253,0.18);
+      color: var(--lilac);
+      box-shadow: 0 2px 12px rgba(196,181,253,0.15);
+    }
+    .method-tab:hover:not(.active) { color: var(--text-primary); background: rgba(255,255,255,0.04); }
+
+    /* INPUT */
+    .input-group { margin-bottom: 24px; }
+    .input-label { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+    .date-input {
+      width: 100%; padding: 16px 20px;
+      background: rgba(255,255,255,0.05); border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg); color: var(--text-primary);
+      font-size: 1.05rem; font-family: inherit; font-weight: 500;
+      outline: none; transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+      cursor: pointer; appearance: none; -webkit-appearance: none;
+    }
+    .date-input::-webkit-calendar-picker-indicator { filter: invert(0.7); cursor: pointer; opacity: 0.6; }
+    .date-input:focus { border-color: var(--lilac); box-shadow: 0 0 0 4px rgba(196,181,253,0.12); background: rgba(255,255,255,0.07); }
+    .date-input.error { border-color: #f87171; box-shadow: 0 0 0 4px rgba(248,113,113,0.12); }
+
+    /* Cycle input */
+    .cycle-row { display: flex; gap: 12px; align-items: center; }
+    .cycle-input {
+      flex: 1; padding: 16px 20px;
+      background: rgba(255,255,255,0.05); border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg); color: var(--text-primary);
+      font-size: 1.05rem; font-family: inherit; font-weight: 500;
+      outline: none; transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .cycle-input:focus { border-color: var(--lilac); box-shadow: 0 0 0 4px rgba(196,181,253,0.12); }
+    .cycle-label-inline { font-size: 0.88rem; color: var(--text-muted); white-space: nowrap; }
+
+    .input-error { display: none; font-size: 0.8rem; color: #f87171; margin-top: 8px; padding-left: 4px; align-items: center; gap: 6px; }
+    .input-error.show { display: flex; animation: fadeIn 0.3s ease; }
+
+    .calc-btn {
+      width: 100%; padding: 17px 24px; border-radius: var(--radius-lg);
+      background: var(--gradient-btn); color: #fff;
+      font-size: 1rem; font-weight: 700; letter-spacing: 0.02em;
+      border: none; cursor: pointer; position: relative; overflow: hidden;
+      transition: transform var(--transition), box-shadow var(--transition);
+      box-shadow: 0 8px 30px rgba(200,100,120,0.4);
+    }
+    .calc-btn::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg,rgba(255,255,255,0.15),transparent); opacity: 0; transition: opacity var(--transition); }
+    .calc-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(200,100,120,0.5); }
+    .calc-btn:hover::before { opacity: 1; }
+    .calc-btn:active { transform: translateY(0); }
+    .calc-btn-inner { display: flex; align-items: center; justify-content: center; gap: 10px; pointer-events: none; }
+    .calc-btn-icon { font-size: 18px; transition: transform var(--transition); }
+    .calc-btn:hover .calc-btn-icon { transform: scale(1.2) rotate(-5deg); }
+
+    /* RESULT */
+    .result-section { display: none; padding: 0 24px 80px; position: relative; z-index: 1; }
+    .result-section.show { display: block; animation: fadeUp 0.6s ease both; }
+    .result-inner { max-width: 680px; margin: 0 auto; }
+
+    .result-title-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 12px; flex-wrap: wrap; }
+    .result-title { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
+    .copy-btn {
+      display: flex; align-items: center; gap: 7px; padding: 9px 18px;
+      border-radius: var(--radius-pill); background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border); color: var(--text-secondary);
+      font-size: 0.82rem; font-weight: 600; cursor: pointer;
+      font-family: inherit; transition: all var(--transition);
+    }
+    .copy-btn:hover { background: rgba(196,181,253,0.12); border-color: rgba(196,181,253,0.4); color: var(--lilac); transform: translateY(-1px); }
+    .copy-btn.copied { background: rgba(110,231,183,0.12); border-color: rgba(110,231,183,0.4); color: var(--mint); }
+
+    .result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+    .stat-card {
+      border-radius: var(--radius-lg); border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04); padding: 22px 18px;
+      text-align: center; cursor: default;
+      transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition), background var(--transition);
+      position: relative; overflow: hidden;
+    }
+    .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; opacity: 0; transition: opacity var(--transition); }
+    .stat-card.peach::before  { background: linear-gradient(90deg,#ffb49a,#f9a8d4); }
+    .stat-card.lilac::before  { background: linear-gradient(90deg,#c4b5fd,#a78bfa); }
+    .stat-card.mint::before   { background: linear-gradient(90deg,#6ee7b7,#34d399); }
+    .stat-card.sky::before    { background: linear-gradient(90deg,#7dd3fc,#38bdf8); }
+    .stat-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.14); background: rgba(255,255,255,0.07); box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+    .stat-card:hover::before { opacity: 1; }
+    .stat-card-icon { font-size: 26px; margin-bottom: 10px; display: block; }
+    .stat-card-num { font-size: clamp(1.6rem,4vw,2.2rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; margin-bottom: 6px; }
+    .stat-card.peach .stat-card-num { background: linear-gradient(135deg,#ffb49a,#f9a8d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .stat-card.lilac .stat-card-num { background: linear-gradient(135deg,#c4b5fd,#a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .stat-card.mint  .stat-card-num { background: linear-gradient(135deg,#6ee7b7,#34d399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .stat-card.sky   .stat-card-num { background: linear-gradient(135deg,#7dd3fc,#38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .stat-card-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; }
+    .stat-card-sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; }
+
+    .detail-card { border-radius: var(--radius-lg); border: 1px solid var(--border); background: rgba(255,255,255,0.03); padding: 20px 24px; margin-bottom: 14px; }
+    .detail-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .detail-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .detail-row:first-child { padding-top: 0; }
+    .detail-key { font-size: 0.88rem; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
+    .detail-key-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .detail-key-dot.peach { background: var(--peach); }
+    .detail-key-dot.lilac { background: var(--lilac); }
+    .detail-key-dot.mint  { background: var(--mint); }
+    .detail-key-dot.pink  { background: var(--pink); }
+    .detail-key-dot.sky   { background: var(--sky); }
+    .detail-val { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); text-align: right; }
+
+    /* Progress bar */
+    .progress-card { border-radius: var(--radius-lg); border: 1px solid var(--border); background: rgba(255,255,255,0.03); padding: 20px 24px; margin-bottom: 14px; }
+    .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .progress-label { font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); }
+    .progress-pct { font-size: 0.9rem; font-weight: 700; color: var(--lilac); }
+    .progress-bar-track { height: 8px; background: rgba(255,255,255,0.06); border-radius: var(--radius-pill); overflow: hidden; margin-bottom: 16px; }
+    .progress-bar-fill { height: 100%; border-radius: var(--radius-pill); background: linear-gradient(90deg,#c4b5fd,#f9a8d4); transition: width 1.2s cubic-bezier(0.4,0,0.2,1); width: 0%; }
+    .trimester-row { display: flex; gap: 8px; }
+    .trimester-chip {
+      flex: 1; padding: 10px 8px; border-radius: 12px; text-align: center;
+      border: 1px solid var(--border); background: rgba(255,255,255,0.03);
+      transition: all var(--transition);
+    }
+    .trimester-chip.active { background: rgba(196,181,253,0.12); border-color: rgba(196,181,253,0.35); }
+    .trimester-chip-label { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .trimester-chip.active .trimester-chip-label { color: var(--lilac); }
+    .trimester-chip-weeks { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+    .trimester-chip.active .trimester-chip-weeks { color: var(--text-secondary); }
+
+    /* Countdown */
+    .countdown-card {
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(196,181,253,0.2);
+      background: rgba(196,181,253,0.05);
+      padding: 18px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; flex-wrap: wrap; margin-bottom: 14px;
+    }
+    .countdown-left { display: flex; align-items: center; gap: 10px; }
+    .live-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--lilac); animation: pulse 1.5s infinite; flex-shrink: 0; }
+    .countdown-label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+    .countdown-label span { color: var(--lilac); }
+    .countdown-val { font-size: 1.1rem; font-weight: 800; color: var(--lilac); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+
+    /* Tools section */
+    .tools-section { position: relative; z-index: 1; padding: 0 24px 80px; }
+    .section-header { text-align: center; margin-bottom: 48px; }
+    .section-badge { display: inline-block; padding: 5px 16px; border-radius: var(--radius-pill); background: rgba(196,181,253,0.1); border: 1px solid rgba(196,181,253,0.25); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--lilac); margin-bottom: 16px; }
+    .section-title { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 12px; }
+    .section-sub { font-size: 1rem; color: var(--text-secondary); max-width: 480px; margin: 0 auto; }
+    .tools-grid { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+    .tool-card {
+      border-radius: var(--radius-xl); border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03); padding: 28px;
+      cursor: pointer; transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition), background var(--transition);
+      position: relative; overflow: hidden; text-decoration: none; color: inherit; display: block;
+    }
+    .tool-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 120px; opacity: 0; transition: opacity var(--transition); border-radius: 0 0 var(--radius-xl) var(--radius-xl); }
+    .tool-card-1::after { background: radial-gradient(ellipse at bottom, rgba(255,180,150,0.08), transparent); }
+    .tool-card-2::after { background: radial-gradient(ellipse at bottom, rgba(196,181,253,0.08), transparent); }
+    .tool-card-3::after { background: radial-gradient(ellipse at bottom, rgba(110,231,183,0.08), transparent); }
+    .tool-card:hover { transform: translateY(-6px); border-color: rgba(255,255,255,0.12); background: rgba(255,255,255,0.06); box-shadow: 0 24px 60px rgba(0,0,0,0.35); }
+    .tool-card:hover::after { opacity: 1; }
+    .tool-icon { width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 18px; position: relative; z-index: 1; }
+    .tool-icon-1 { background: linear-gradient(135deg,rgba(255,180,150,0.2),rgba(249,168,212,0.2)); border: 1px solid rgba(255,180,150,0.25); }
+    .tool-icon-2 { background: linear-gradient(135deg,rgba(196,181,253,0.2),rgba(167,139,250,0.2)); border: 1px solid rgba(196,181,253,0.25); }
+    .tool-icon-3 { background: linear-gradient(135deg,rgba(110,231,183,0.2),rgba(52,211,153,0.2)); border: 1px solid rgba(110,231,183,0.25); }
+    .tool-name { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; position: relative; z-index: 1; }
+    .tool-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 18px; position: relative; z-index: 1; }
+    .tool-link { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; position: relative; z-index: 1; transition: gap var(--transition); }
+    .tool-link-1 { color: var(--peach); }
+    .tool-link-2 { color: var(--lilac); }
+    .tool-link-3 { color: var(--mint); }
+    .tool-card:hover .tool-link { gap: 10px; }
+    .tool-tag { position: absolute; top: 18px; right: 18px; padding: 4px 10px; border-radius: var(--radius-pill); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+    .tag-free { background: rgba(110,231,183,0.12); color: var(--mint); border: 1px solid rgba(110,231,183,0.25); }
+
+    /* FAQ */
+    .faq-section { position: relative; z-index: 1; padding: 0 24px 80px; }
+    .faq-list { max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+    .faq-item { border-radius: var(--radius-lg); border: 1px solid var(--border); background: rgba(255,255,255,0.03); overflow: hidden; transition: border-color var(--transition), background var(--transition); }
+    .faq-item.open { border-color: rgba(196,181,253,0.25); background: rgba(196,181,253,0.03); }
+    .faq-q { width: 100%; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; background: none; border: none; color: var(--text-primary); font-size: 0.95rem; font-weight: 600; text-align: left; cursor: pointer; font-family: inherit; line-height: 1.4; transition: color var(--transition); }
+    .faq-q:hover { color: var(--lilac); }
+    .faq-icon { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.06); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; color: var(--text-muted); transition: transform var(--transition), background var(--transition), border-color var(--transition), color var(--transition); }
+    .faq-item.open .faq-icon { transform: rotate(45deg); background: rgba(196,181,253,0.12); border-color: rgba(196,181,253,0.3); color: var(--lilac); }
+    .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1); }
+    .faq-item.open .faq-a { max-height: 300px; }
+    .faq-a-inner { padding: 0 24px 20px; padding-top: 16px; font-size: 0.9rem; color: var(--text-secondary); line-height: 1.75; border-top: 1px solid rgba(255,255,255,0.04); }
+
+    /* FOOTER */
+    .footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 60px 24px 40px; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+    .footer-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; font-size: 1.1rem; font-weight: 700; margin-bottom: 14px; }
+    .footer-logo-icon { width: 32px; height: 32px; border-radius: 9px; background: var(--gradient-btn); display: flex; align-items: center; justify-content: center; font-size: 15px; }
+    .footer-tagline { font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; max-width: 220px; }
+    .footer-col-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 14px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.88rem; transition: color var(--transition); }
+    .footer-links a:hover { color: var(--peach); }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; padding-top: 24px; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 12px; }
+    .footer-copy { font-size: 0.82rem; color: var(--text-muted); }
+    .footer-love { font-size: 0.82rem; color: var(--text-muted); }
+    .footer-love span { color: #f87171; }
+
+    /* SCROLL REVEAL */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* TOASTER */
+    .toaster { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: rgba(30,28,45,0.95); border: 1px solid rgba(110,231,183,0.3); color: var(--mint); padding: 12px 24px; border-radius: var(--radius-pill); font-size: 0.88rem; font-weight: 600; backdrop-filter: blur(20px); z-index: 999; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease; opacity: 0; pointer-events: none; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+    .toaster.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    @keyframes sparkle { 0%{transform:scale(0) rotate(0deg);opacity:1} 100%{transform:scale(1.5) rotate(180deg);opacity:0} }
+    .sparkle { position: absolute; pointer-events: none; font-size: 18px; animation: sparkle 0.7s ease forwards; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .hero { padding: 72px 24px 48px; }
+      .hero-stats { gap: 24px; }
+      .hero-divider { display: none; }
+      .calc-header { padding: 24px 20px 0; }
+      .calc-body { padding: 20px 20px 28px; }
+      .result-grid { grid-template-columns: repeat(3,1fr); gap: 10px; }
+      .stat-card { padding: 16px 10px; }
+      .stat-card-num { font-size: 1.4rem; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 28px; }
+      .footer-brand { grid-column: 1 / -1; }
+      .trimester-row { flex-direction: column; }
+    }
+    @media (max-width: 480px) {
+      .result-grid { grid-template-columns: 1fr 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
+      .result-title-bar { flex-direction: column; align-items: flex-start; }
+      .method-tabs { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-blobs" aria-hidden="true">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="blob blob-4"></div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon" aria-hidden="true">🌸</div>
+      <span class="nav-logo-text">BabyBloom</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Age Calculator</a></li>
+      <li><a href="due-date.html" class="active">Due Date</a></li>
+      <li><a href="sleep-calculator.html">Sleep</a></li>
+      <li><a href="feeding-calculator.html">Feeding</a></li>
+      <li><a href="#calculator" class="nav-cta">Calculate Now</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html">🍼 Age Calculator</a>
+    <a href="due-date.html">🤰 Due Date</a>
+    <a href="sleep-calculator.html">😴 Sleep Calculator</a>
+    <a href="feeding-calculator.html">🥄 Feeding Schedule</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" role="banner">
+  <div class="hero-badge">
+    <span class="hero-badge-dot" aria-hidden="true"></span>
+    Pregnancy Due Date Calculator
+  </div>
+  <h1>When Will Your<br /><span class="gradient-text">Baby Arrive?</span></h1>
+  <p>Calculate your estimated due date from your last period or conception date — with trimester tracking and a live pregnancy countdown.</p>
+  <div class="hero-stats" aria-label="Platform statistics">
+    <div class="hero-stat">
+      <div class="hero-stat-num">280</div>
+      <div class="hero-stat-label">Days Average</div>
+    </div>
+    <div class="hero-divider" aria-hidden="true"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">3</div>
+      <div class="hero-stat-label">Trimesters</div>
+    </div>
+    <div class="hero-divider" aria-hidden="true"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">40</div>
+      <div class="hero-stat-label">Weeks Total</div>
+    </div>
+  </div>
+</header>
+
+<!-- CALCULATOR -->
+<section class="calc-section" id="calculator" aria-labelledby="calc-heading">
+  <article class="calc-card">
+    <div class="calc-header">
+      <div class="calc-icon" aria-hidden="true">🤰</div>
+      <div class="calc-header-text">
+        <h2 id="calc-heading">Due Date Calculator</h2>
+        <p>Choose your calculation method below</p>
+      </div>
+    </div>
+    <div class="calc-body">
+      <!-- Method Tabs -->
+      <div class="method-tabs" role="tablist" aria-label="Calculation method">
+        <button class="method-tab active" role="tab" aria-selected="true" id="tab-lmp" onclick="switchTab('lmp')">
+          📅 Last Period (LMP)
+        </button>
+        <button class="method-tab" role="tab" aria-selected="false" id="tab-conception" onclick="switchTab('conception')">
+          💫 Conception Date
+        </button>
+      </div>
+
+      <!-- LMP Panel -->
+      <div id="panel-lmp">
+        <div class="input-group">
+          <label class="input-label" for="lmp-date">
+            <span>📅</span> First Day of Last Period
+          </label>
+          <input type="date" id="lmp-date" class="date-input" aria-describedby="lmp-error" />
+          <div class="input-error" id="lmp-error" role="alert"><span>⚠️</span><span id="lmp-error-msg">Please select a valid date</span></div>
+        </div>
+        <div class="input-group">
+          <label class="input-label" for="cycle-len">
+            <span>🔄</span> Average Cycle Length
+          </label>
+          <div class="cycle-row">
+            <input type="number" id="cycle-len" class="cycle-input" value="28" min="21" max="45" aria-label="Cycle length in days" />
+            <span class="cycle-label-inline">days (21–45)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conception Panel -->
+      <div id="panel-conception" style="display:none;">
+        <div class="input-group">
+          <label class="input-label" for="conception-date">
+            <span>💫</span> Conception / Ovulation Date
+          </label>
+          <input type="date" id="conception-date" class="date-input" aria-describedby="conception-error" />
+          <div class="input-error" id="conception-error" role="alert"><span>⚠️</span><span id="con-error-msg">Please select a valid date</span></div>
+        </div>
+      </div>
+
+      <button class="calc-btn" onclick="calculateDueDate()" type="button" aria-label="Calculate due date">
+        <span class="calc-btn-inner">
+          <span class="calc-btn-icon" aria-hidden="true">✨</span>
+          Calculate My Due Date
+        </span>
+      </button>
+    </div>
+  </article>
+</section>
+
+<!-- RESULTS -->
+<section class="result-section" id="resultSection" aria-labelledby="result-heading" aria-live="polite">
+  <div class="result-inner">
+    <div class="result-title-bar">
+      <div class="result-title">
+        <span aria-hidden="true">🎉</span>
+        <h2 id="result-heading">Your Pregnancy Summary</h2>
+      </div>
+      <button class="copy-btn" id="copyBtn" onclick="copyResult()" type="button">
+        <span id="copyIcon">📋</span><span id="copyText">Copy Results</span>
+      </button>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="result-grid" role="region" aria-label="Pregnancy statistics">
+      <div class="stat-card lilac" tabindex="0">
+        <span class="stat-card-icon" aria-hidden="true">📅</span>
+        <div class="stat-card-num" id="res-edd">—</div>
+        <div class="stat-card-label">Due Date</div>
+        <div class="stat-card-sub" id="res-edd-day"></div>
+      </div>
+      <div class="stat-card peach" tabindex="0">
+        <span class="stat-card-icon" aria-hidden="true">📆</span>
+        <div class="stat-card-num" id="res-weeks">—</div>
+        <div class="stat-card-label">Weeks Along</div>
+        <div class="stat-card-sub" id="res-weeks-sub"></div>
+      </div>
+      <div class="stat-card mint" tabindex="0">
+        <span class="stat-card-icon" aria-hidden="true">⏳</span>
+        <div class="stat-card-num" id="res-days-left">—</div>
+        <div class="stat-card-label">Days Left</div>
+        <div class="stat-card-sub" id="res-days-left-sub"></div>
+      </div>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-card" role="region" aria-label="Pregnancy progress">
+      <div class="progress-header">
+        <div class="progress-label">🌱 Pregnancy Progress</div>
+        <div class="progress-pct" id="progress-pct">0%</div>
+      </div>
+      <div class="progress-bar-track" aria-hidden="true">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+      <div class="trimester-row" role="group" aria-label="Trimesters">
+        <div class="trimester-chip" id="tri-1">
+          <div class="trimester-chip-label">1st Trimester</div>
+          <div class="trimester-chip-weeks">Weeks 1–12</div>
+        </div>
+        <div class="trimester-chip" id="tri-2">
+          <div class="trimester-chip-label">2nd Trimester</div>
+          <div class="trimester-chip-weeks">Weeks 13–26</div>
+        </div>
+        <div class="trimester-chip" id="tri-3">
+          <div class="trimester-chip-label">3rd Trimester</div>
+          <div class="trimester-chip-weeks">Weeks 27–40</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Details -->
+    <div class="detail-card" role="region" aria-label="Detailed pregnancy information">
+      <div class="detail-row">
+        <div class="detail-key"><div class="detail-key-dot lilac"></div>Estimated Due Date</div>
+        <div class="detail-val" id="d-edd">—</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-key"><div class="detail-key-dot peach"></div>Conception Date</div>
+        <div class="detail-val" id="d-conception">—</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-key"><div class="detail-key-dot mint"></div>Current Trimester</div>
+        <div class="detail-val" id="d-trimester">—</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-key"><div class="detail-key-dot pink"></div>Current Week</div>
+        <div class="detail-val" id="d-week">—</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-key"><div class="detail-key-dot sky"></div>Full Term Window</div>
+        <div class="detail-val" id="d-full-term">—</div>
+      </div>
+    </div>
+
+    <!-- Live countdown -->
+    <div class="countdown-card" role="timer" aria-label="Live countdown to due date">
+      <div class="countdown-left">
+        <div class="live-dot" aria-hidden="true"></div>
+        <div class="countdown-label">Days remaining until your <span>estimated due date</span></div>
+      </div>
+      <div class="countdown-val" id="countdown-val">— days</div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section class="tools-section" id="tools" aria-labelledby="tools-heading">
+  <div class="section-header reveal">
+    <div class="section-badge">Related Tools</div>
+    <h2 class="section-title" id="tools-heading">More <span class="gradient-text">Baby Tools</span></h2>
+    <p class="section-sub">Everything you need for your pregnancy journey and beyond.</p>
+  </div>
+  <div class="tools-grid">
+    <a href="index.html" class="tool-card tool-card-1 reveal">
+      <span class="tool-tag tag-free">Free</span>
+      <div class="tool-icon tool-icon-1" aria-hidden="true">👶</div>
+      <div class="tool-name">Baby Age Calculator</div>
+      <div class="tool-desc">Calculate your baby's exact age in days, weeks, and months with a live real-time counter.</div>
+      <div class="tool-link tool-link-1">Calculate Age →</div>
+    </a>
+    <a href="sleep-calculator.html" class="tool-card tool-card-2 reveal">
+      <span class="tool-tag tag-free">Free</span>
+      <div class="tool-icon tool-icon-2" aria-hidden="true">😴</div>
+      <div class="tool-name">Baby Sleep Calculator</div>
+      <div class="tool-desc">Get a personalized sleep schedule based on your baby's age — nap times, bedtime, and wake windows.</div>
+      <div class="tool-link tool-link-2">Plan Sleep →</div>
+    </a>
+    <a href="feeding-calculator.html" class="tool-card tool-card-3 reveal">
+      <span class="tool-tag tag-free">Free</span>
+      <div class="tool-icon tool-icon-3" aria-hidden="true">🍼</div>
+      <div class="tool-name">Feeding Schedule</div>
+      <div class="tool-desc">Build the perfect feeding plan for breastfed or formula-fed babies based on their current age.</div>
+      <div class="tool-link tool-link-3">Plan Feeds →</div>
+    </a>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section" id="faq" aria-labelledby="faq-heading">
+  <div class="section-header reveal">
+    <div class="section-badge">FAQ</div>
+    <h2 class="section-title" id="faq-heading">Common <span class="gradient-text">Questions</span></h2>
+    <p class="section-sub">Everything parents ask about due dates and pregnancy timing.</p>
+  </div>
+  <div class="faq-list" role="list">
+    <div class="faq-item" role="listitem">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">How is my due date calculated?<span class="faq-icon" aria-hidden="true">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Your due date is calculated using Naegele's Rule: add 280 days (40 weeks) to the first day of your last menstrual period. If you know your conception date, we add 266 days (38 weeks) instead. Only about 5% of babies are born on their exact due date, so a window of 37–42 weeks is full term.</div></div>
+    </div>
+    <div class="faq-item" role="listitem">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">What are the three trimesters of pregnancy?<span class="faq-icon" aria-hidden="true">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">The first trimester spans weeks 1–12, the second trimester weeks 13–26, and the third trimester weeks 27–40. Each trimester brings distinct developmental milestones for your baby and significant physical changes for you.</div></div>
+    </div>
+    <div class="faq-item" role="listitem">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Can my due date change after an ultrasound?<span class="faq-icon" aria-hidden="true">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Yes. An early ultrasound (before 14 weeks) can provide a more accurate due date by measuring the baby's size. If there's more than a 5–7 day difference between the LMP-based date and the ultrasound date, your provider may adjust your due date accordingly.</div></div>
+    </div>
+    <div class="faq-item" role="listitem">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">What if I don't know my last menstrual period date?<span class="faq-icon" aria-hidden="true">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">If you don't know your LMP, you can use your conception or ovulation date using the second tab. Alternatively, an early ultrasound is the most accurate way to establish a due date. Our calculator supports both methods.</div></div>
+    </div>
+    <div class="faq-item" role="listitem">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Is 40 weeks exactly 9 months?<span class="faq-icon" aria-hidden="true">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Not exactly. 40 weeks is closer to 9 months and 1 week. Pregnancy is measured in weeks for precision. The 9-month figure is an approximation — counting from the LMP through delivery is 40 weeks or about 280 days total.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="footer-logo">
+          <div class="footer-logo-icon" aria-hidden="true">🌸</div>
+          <span class="gradient-text" style="font-size:1.1rem;font-weight:700;">BabyBloom</span>
+        </a>
+        <p class="footer-tagline">Premium free tools for modern parents — beautifully designed, scientifically accurate.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Tools</div>
+        <ul class="footer-links">
+          <li><a href="index.html">Age Calculator</a></li>
+          <li><a href="due-date.html">Due Date Calculator</a></li>
+          <li><a href="sleep-calculator.html">Sleep Calculator</a></li>
+          <li><a href="feeding-calculator.html">Feeding Schedule</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Resources</div>
+        <ul class="footer-links">
+          <li><a href="#">Milestone Guide</a></li>
+          <li><a href="#">Vaccination Chart</a></li>
+          <li><a href="#">Growth Tracker</a></li>
+          <li><a href="#">Baby Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 BabyBloom. All rights reserved.</div>
+      <div class="footer-love">Made with <span>♥</span> for every parent</div>
+    </div>
+  </div>
+</footer>
+
+<div class="toaster" id="toaster" role="status" aria-live="polite">
+  <span>✅</span><span id="toaster-msg">Copied!</span>
+</div>
+
+<script>
+  /* NAVBAR */
+  const navbar = document.getElementById('navbar');
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 20));
+  hamburger.addEventListener('click', () => {
+    const open = mobileMenu.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+  });
+
+  /* SET MAX DATES */
+  window.addEventListener('DOMContentLoaded', () => {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('lmp-date').setAttribute('max', today);
+    document.getElementById('conception-date').setAttribute('max', today);
+    initScrollReveal();
+  });
+
+  /* TAB SWITCHING */
+  let activeTab = 'lmp';
+  function switchTab(tab) {
+    activeTab = tab;
+    document.getElementById('panel-lmp').style.display         = tab === 'lmp' ? 'block' : 'none';
+    document.getElementById('panel-conception').style.display  = tab === 'conception' ? 'block' : 'none';
+    document.getElementById('tab-lmp').classList.toggle('active', tab === 'lmp');
+    document.getElementById('tab-conception').classList.toggle('active', tab === 'conception');
+    document.getElementById('tab-lmp').setAttribute('aria-selected', tab === 'lmp');
+    document.getElementById('tab-conception').setAttribute('aria-selected', tab === 'conception');
+  }
+
+  /* CALCULATE */
+  let storedEDD = null;
+  let storedLMP = null;
+
+  function calculateDueDate() {
+    clearErrors();
+    let lmpDate, edd, conceptionDate;
+    const today = new Date(); today.setHours(0,0,0,0);
+
+    if (activeTab === 'lmp') {
+      const lmpVal = document.getElementById('lmp-date').value;
+      if (!lmpVal) { showError('lmp-error','lmp-error-msg','Please select your LMP date.'); document.getElementById('lmp-date').classList.add('error'); return; }
+      lmpDate = new Date(lmpVal + 'T00:00:00');
+      if (lmpDate > today) { showError('lmp-error','lmp-error-msg','Date cannot be in the future.'); document.getElementById('lmp-date').classList.add('error'); return; }
+      const cycle = parseInt(document.getElementById('cycle-len').value) || 28;
+      const ovulationDay = cycle - 14;
+      conceptionDate = new Date(lmpDate); conceptionDate.setDate(conceptionDate.getDate() + ovulationDay);
+      edd = new Date(lmpDate); edd.setDate(edd.getDate() + 280 + (cycle - 28));
+    } else {
+      const conVal = document.getElementById('conception-date').value;
+      if (!conVal) { showError('conception-error','con-error-msg','Please select your conception date.'); document.getElementById('conception-date').classList.add('error'); return; }
+      conceptionDate = new Date(conVal + 'T00:00:00');
+      if (conceptionDate > today) { showError('conception-error','con-error-msg','Date cannot be in the future.'); document.getElementById('conception-date').classList.add('error'); return; }
+      edd = new Date(conceptionDate); edd.setDate(edd.getDate() + 266);
+      lmpDate = new Date(conceptionDate); lmpDate.setDate(lmpDate.getDate() - 14);
+    }
+
+    storedEDD = edd;
+    storedLMP = lmpDate;
+
+    const msPerDay = 86400000;
+    const daysPregnant = Math.floor((today - lmpDate) / msPerDay);
+    const daysLeft = Math.max(0, Math.floor((edd - today) / msPerDay));
+    const weeksAlong = Math.floor(daysPregnant / 7);
+    const dayOfWeek = daysPregnant % 7;
+    const pct = Math.min(100, Math.round((daysPregnant / 280) * 100));
+
+    // Trimester
+    let trimesterNum = 1, trimesterLabel = '1st Trimester';
+    if (weeksAlong >= 27) { trimesterNum = 3; trimesterLabel = '3rd Trimester'; }
+    else if (weeksAlong >= 13) { trimesterNum = 2; trimesterLabel = '2nd Trimester'; }
+
+    // Full term window
+    const ft37 = new Date(lmpDate); ft37.setDate(ft37.getDate() + 259);
+    const ft42 = new Date(lmpDate); ft42.setDate(ft42.getDate() + 294);
+
+    // Render
+    const eddShort = edd.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+    const eddFull  = edd.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+    const eddDay   = edd.toLocaleDateString('en-US', { weekday:'long' });
+
+    document.getElementById('res-edd').textContent         = eddShort;
+    document.getElementById('res-edd-day').textContent     = edd.getFullYear();
+    document.getElementById('res-weeks').textContent       = weeksAlong >= 0 ? weeksAlong : '0';
+    document.getElementById('res-weeks-sub').textContent   = `+ ${dayOfWeek} day${dayOfWeek!==1?'s':''}`;
+    document.getElementById('res-days-left').textContent   = daysLeft.toLocaleString();
+    document.getElementById('res-days-left-sub').textContent = daysLeft > 0 ? 'to go' : 'overdue!';
+
+    document.getElementById('progress-pct').textContent   = pct + '%';
+    document.getElementById('progress-fill').style.width  = pct + '%';
+
+    document.getElementById('tri-1').classList.toggle('active', trimesterNum === 1);
+    document.getElementById('tri-2').classList.toggle('active', trimesterNum === 2);
+    document.getElementById('tri-3').classList.toggle('active', trimesterNum === 3);
+
+    document.getElementById('d-edd').textContent         = `${eddDay}, ${eddFull}`;
+    document.getElementById('d-conception').textContent  = formatDate(conceptionDate);
+    document.getElementById('d-trimester').textContent   = trimesterLabel;
+    document.getElementById('d-week').textContent        = `Week ${weeksAlong}, Day ${dayOfWeek}`;
+    document.getElementById('d-full-term').textContent   = `${formatDate(ft37)} – ${formatDate(ft42)}`;
+    document.getElementById('countdown-val').textContent = `${daysLeft.toLocaleString()} day${daysLeft!==1?'s':''} left`;
+
+    // Animate
+    const rs = document.getElementById('resultSection');
+    rs.classList.add('show');
+    animateNumbers();
+    setTimeout(() => rs.scrollIntoView({ behavior:'smooth', block:'start' }), 100);
+    spawnSparkles(document.querySelector('.calc-btn'));
+  }
+
+  /* COPY */
+  function copyResult() {
+    if (!storedEDD) return;
+    const today = new Date(); today.setHours(0,0,0,0);
+    const daysLeft = Math.max(0, Math.floor((storedEDD - today) / 86400000));
+    const text = `🌸 BabyBloom – Pregnancy Due Date\n📅 Due Date: ${formatDate(storedEDD)}\n⏳ Days Remaining: ${daysLeft}\n🌱 LMP: ${formatDate(storedLMP)}\nCalculated at babybloom.app`;
+    navigator.clipboard.writeText(text).then(() => {
+      document.getElementById('copyBtn').classList.add('copied');
+      document.getElementById('copyIcon').textContent = '✅';
+      document.getElementById('copyText').textContent = 'Copied!';
+      showToast('Results copied!');
+      setTimeout(() => {
+        document.getElementById('copyBtn').classList.remove('copied');
+        document.getElementById('copyIcon').textContent = '📋';
+        document.getElementById('copyText').textContent = 'Copy Results';
+      }, 2500);
+    });
+  }
+
+  /* HELPERS */
+  function formatDate(d) { return new Date(d).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }); }
+  function clearErrors() {
+    ['lmp-error','conception-error'].forEach(id => document.getElementById(id).classList.remove('show'));
+    ['lmp-date','conception-date'].forEach(id => document.getElementById(id).classList.remove('error'));
+  }
+  function showError(errId, msgId, msg) {
+    document.getElementById(msgId).textContent = msg;
+    document.getElementById(errId).classList.add('show');
+  }
+  function animateNumbers() {
+    document.querySelectorAll('.stat-card-num').forEach(el => {
+      el.style.animation = 'none'; el.offsetHeight;
+      el.style.animation = 'numberPop 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards';
+    });
+  }
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => { i.classList.remove('open'); i.querySelector('.faq-q').setAttribute('aria-expanded','false'); });
+    if (!isOpen) { item.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
+  }
+  let toastTimeout;
+  function showToast(msg) {
+    const t = document.getElementById('toaster');
+    document.getElementById('toaster-msg').textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+  function spawnSparkles(el) {
+    const icons = ['✨','🌸','⭐','💫','🎉'];
+    const rect = el.getBoundingClientRect();
+    for (let i = 0; i < 6; i++) {
+      setTimeout(() => {
+        const s = document.createElement('div');
+        s.className = 'sparkle';
+        s.textContent = icons[Math.floor(Math.random()*icons.length)];
+        s.style.cssText = `left:${rect.left+Math.random()*rect.width}px;top:${rect.top+window.scrollY-10+Math.random()*30}px;position:absolute;z-index:999;`;
+        document.body.appendChild(s);
+        setTimeout(() => s.remove(), 800);
+      }, i * 80);
+    }
+  }
+  function initScrollReveal() {
+    const els = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry,i) => {
+        if (entry.isIntersecting) { setTimeout(() => entry.target.classList.add('visible'), i*100); io.unobserve(entry.target); }
+      });
+    }, { threshold: 0.12 });
+    els.forEach(el => io.observe(el));
+  }
+
+  const style = document.createElement('style');
+  style.textContent = `@keyframes shakeIt{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}`;
+  document.head.appendChild(style);
+</script>
+</body>
+</html>

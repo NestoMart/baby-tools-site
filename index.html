@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Baby Age Calculator – Exact Age in Days, Weeks & Months | BabyBloom</title>
+  <meta name="description" content="Calculate your baby's exact age in days, weeks, and months instantly. Free, accurate baby age calculator with live counter, milestone tracker, and more baby tools." />
+  <meta name="keywords" content="baby age calculator, baby age in weeks, baby age in months, infant age calculator, newborn age tracker" />
+  <meta property="og:title" content="Baby Age Calculator – BabyBloom" />
+  <meta property="og:description" content="Find your baby's exact age in days, weeks & months. Beautifully designed, instant & accurate." />
+  <meta property="og:type" content="website" />
+  <link rel="canonical" href="https://babybloom.app/" />
+
+  <!-- FAQ Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I calculate my baby's age in weeks?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "To calculate your baby's age in weeks, subtract the birth date from today's date to get the total number of days, then divide by 7. Our calculator does this automatically and shows the exact weeks and remaining days."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does my baby's age in months matter?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Baby's age in months is crucial for tracking developmental milestones, scheduling vaccinations, and following feeding guidelines. Pediatricians use age in months up to 24 months to monitor healthy growth and development."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the difference between corrected age and chronological age?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Chronological age is counted from the actual birth date. Corrected age (adjusted age) is used for premature babies and is calculated from the original due date. Corrected age is important for tracking milestones in preemie babies until about age 2."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How accurate is this baby age calculator?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Our baby age calculator is extremely accurate. It calculates the precise number of days between the birth date and today, then converts to weeks and months. The live counter updates every second to give real-time age tracking."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I calculate my baby's age for a future milestone?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Currently, our calculator shows the current age from the birth date up to today. Future dates cannot be selected as the birth date to ensure accuracy. For milestone planning, use our related baby tools section."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    /* ─── RESET & BASE ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-deep:       #0d0d14;
+      --bg-card:       rgba(255,255,255,0.04);
+      --bg-card-hover: rgba(255,255,255,0.07);
+      --border:        rgba(255,255,255,0.08);
+      --border-glow:   rgba(255,180,150,0.35);
+      --peach:         #ffb49a;
+      --peach-2:       #ffd4c2;
+      --peach-dark:    #e8845e;
+      --lilac:         #c4b5fd;
+      --lilac-2:       #a78bfa;
+      --lilac-dark:    #7c3aed;
+      --pink:          #f9a8d4;
+      --mint:          #6ee7b7;
+      --text-primary:  #f0edf8;
+      --text-secondary:#b0a8c8;
+      --text-muted:    #6b6580;
+      --gradient-hero: linear-gradient(135deg, #ffb49a 0%, #c4b5fd 50%, #f9a8d4 100%);
+      --gradient-btn:  linear-gradient(135deg, #ffb49a 0%, #e879a0 50%, #a78bfa 100%);
+      --shadow-glow:   0 0 40px rgba(255,180,150,0.15), 0 0 80px rgba(196,181,253,0.1);
+      --radius-lg:     20px;
+      --radius-xl:     28px;
+      --radius-pill:   999px;
+      --transition:    0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ─── ANIMATED BACKGROUND ─── */
+    .bg-blobs {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.18;
+      animation: blobFloat 18s ease-in-out infinite alternate;
+    }
+    .blob-1 { width: 520px; height: 520px; background: #ffb49a; top: -120px; left: -120px; animation-duration: 20s; }
+    .blob-2 { width: 440px; height: 440px; background: #c4b5fd; top: 30%; right: -100px; animation-duration: 25s; animation-delay: -5s; }
+    .blob-3 { width: 380px; height: 380px; background: #f9a8d4; bottom: 10%; left: 20%; animation-duration: 22s; animation-delay: -10s; }
+    .blob-4 { width: 300px; height: 300px; background: #6ee7b7; bottom: -80px; right: 15%; animation-duration: 28s; animation-delay: -8s; }
+
+    @keyframes blobFloat {
+      0%   { transform: translate(0,0) scale(1); }
+      33%  { transform: translate(30px,-40px) scale(1.05); }
+      66%  { transform: translate(-20px,30px) scale(0.97); }
+      100% { transform: translate(10px,-20px) scale(1.03); }
+    }
+
+    /* ─── UTILITY ─── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+    .glass {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .gradient-text {
+      background: var(--gradient-hero);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+
+    /* ─── NAVBAR ─── */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13,13,20,0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      transition: box-shadow var(--transition);
+    }
+    .navbar.scrolled { box-shadow: 0 4px 40px rgba(0,0,0,0.4); }
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .nav-logo-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--gradient-btn);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .nav-logo-text { background: var(--gradient-hero); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 8px 14px;
+      border-radius: var(--radius-pill);
+      transition: color var(--transition), background var(--transition);
+    }
+    .nav-links a:hover { color: var(--text-primary); background: rgba(255,255,255,0.06); }
+    .nav-cta {
+      background: var(--gradient-btn);
+      color: #fff !important;
+      padding: 8px 20px !important;
+      border-radius: var(--radius-pill) !important;
+      font-weight: 600 !important;
+      box-shadow: 0 4px 20px rgba(255,100,100,0.3);
+      transition: transform var(--transition), box-shadow var(--transition) !important;
+    }
+    .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(255,100,100,0.4) !important; background: rgba(0,0,0,0) !important; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 6px; border: none; background: none; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--text-primary); border-radius: 2px; transition: var(--transition); }
+    .mobile-menu {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      padding: 12px 0 16px;
+      border-top: 1px solid var(--border);
+    }
+    .mobile-menu a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 10px 16px;
+      border-radius: 12px;
+      transition: color var(--transition), background var(--transition);
+    }
+    .mobile-menu a:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+    .mobile-menu.open { display: flex; }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 96px 24px 64px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 18px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255,180,150,0.3);
+      background: rgba(255,180,150,0.08);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--peach);
+      margin-bottom: 28px;
+      animation: fadeDown 0.7s ease both;
+    }
+    .hero-badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--peach); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      animation: fadeDown 0.7s 0.1s ease both;
+    }
+    .hero p {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      color: var(--text-secondary);
+      max-width: 540px;
+      margin: 0 auto 36px;
+      line-height: 1.7;
+      animation: fadeDown 0.7s 0.2s ease both;
+    }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      animation: fadeDown 0.7s 0.3s ease both;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat-num { font-size: 1.6rem; font-weight: 800; background: var(--gradient-hero); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-stat-label { font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+    .hero-divider { width: 1px; height: 40px; background: var(--border); align-self: center; }
+
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(30px)}  to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn   { from{opacity:0} to{opacity:1} }
+    @keyframes scaleIn  { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:scale(1)} }
+    @keyframes slideUp  { from{opacity:0;transform:translateY(50px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes numberPop{ 0%{transform:scale(0.5);opacity:0} 70%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
+
+    /* ─── CALCULATOR SECTION ─── */
+    .calc-section {
+      position: relative;
+      z-index: 1;
+      padding: 0 24px 80px;
+    }
+    .calc-card {
+      max-width: 680px;
+      margin: 0 auto;
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      box-shadow: var(--shadow-glow), 0 40px 80px rgba(0,0,0,0.4);
+      overflow: hidden;
+      animation: fadeUp 0.7s 0.3s ease both;
+    }
+    .calc-header {
+      padding: 32px 36px 0;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .calc-icon {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg,#ffb49a,#f9a8d4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+      box-shadow: 0 8px 24px rgba(255,150,130,0.35);
+    }
+    .calc-header-text h2 { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; }
+    .calc-header-text p { font-size: 0.85rem; color: var(--text-muted); margin-top: 2px; }
+    .calc-body { padding: 28px 36px 36px; }
+
+    /* Date Input */
+    .input-group { margin-bottom: 24px; }
+    .input-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .input-label-icon { font-size: 14px; }
+    .date-input-wrapper { position: relative; }
+    .date-input {
+      width: 100%;
+      padding: 16px 20px;
+      background: rgba(255,255,255,0.05);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      color: var(--text-primary);
+      font-size: 1.05rem;
+      font-family: inherit;
+      font-weight: 500;
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .date-input::-webkit-calendar-picker-indicator {
+      filter: invert(0.7);
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity var(--transition);
+    }
+    .date-input::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+    .date-input:focus {
+      border-color: var(--peach);
+      box-shadow: 0 0 0 4px rgba(255,180,150,0.12), 0 4px 20px rgba(255,150,130,0.1);
+      background: rgba(255,255,255,0.07);
+    }
+    .date-input.error { border-color: #f87171; box-shadow: 0 0 0 4px rgba(248,113,113,0.12); }
+    .input-error {
+      display: none;
+      font-size: 0.8rem;
+      color: #f87171;
+      margin-top: 8px;
+      padding-left: 4px;
+      align-items: center;
+      gap: 6px;
+    }
+    .input-error.show { display: flex; animation: fadeIn 0.3s ease; }
+
+    /* Calculate Button */
+    .calc-btn {
+      width: 100%;
+      padding: 17px 24px;
+      border-radius: var(--radius-lg);
+      background: var(--gradient-btn);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform var(--transition), box-shadow var(--transition);
+      box-shadow: 0 8px 30px rgba(200,100,120,0.4);
+    }
+    .calc-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg,rgba(255,255,255,0.15),transparent);
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+    .calc-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(200,100,120,0.5); }
+    .calc-btn:hover::before { opacity: 1; }
+    .calc-btn:active { transform: translateY(0); }
+    .calc-btn-inner { display: flex; align-items: center; justify-content: center; gap: 10px; pointer-events: none; }
+    .calc-btn-icon { font-size: 18px; transition: transform var(--transition); }
+    .calc-btn:hover .calc-btn-icon { transform: scale(1.2) rotate(-5deg); }
+
+    /* Quick picks */
+    .quick-picks {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .quick-btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      font-family: inherit;
+    }
+    .quick-btn:hover {
+      background: rgba(255,180,150,0.12);
+      border-color: rgba(255,180,150,0.4);
+      color: var(--peach);
+      transform: translateY(-1px);
+    }
+
+    /* ─── RESULT DASHBOARD ─── */
+    .result-section {
+      display: none;
+      padding: 0 24px 80px;
+      position: relative;
+      z-index: 1;
+    }
+    .result-section.show { display: block; animation: fadeUp 0.6s ease both; }
+    .result-inner { max-width: 680px; margin: 0 auto; }
+
+    .result-title-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .result-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .result-title-emoji { font-size: 20px; }
+    .copy-btn {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 18px;
+      border-radius: var(--radius-pill);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all var(--transition);
+    }
+    .copy-btn:hover {
+      background: rgba(196,181,253,0.12);
+      border-color: rgba(196,181,253,0.4);
+      color: var(--lilac);
+      transform: translateY(-1px);
+    }
+    .copy-btn.copied {
+      background: rgba(110,231,183,0.12);
+      border-color: rgba(110,231,183,0.4);
+      color: var(--mint);
+    }
+
+    /* Stat cards */
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .stat-card {
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      padding: 22px 18px;
+      text-align: center;
+      cursor: default;
+      transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition), background var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+    .stat-card.peach::before  { background: linear-gradient(90deg,#ffb49a,#f9a8d4); }
+    .stat-card.lilac::before  { background: linear-gradient(90deg,#c4b5fd,#a78bfa); }
+    .stat-card.mint::before   { background: linear-gradient(90deg,#6ee7b7,#34d399); }
+    .stat-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.07);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+    .stat-card:hover::before { opacity: 1; }
+    .stat-card-icon { font-size: 26px; margin-bottom: 10px; display: block; }
+    .stat-card-num {
+      font-size: clamp(1.8rem,4vw,2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-card.peach .stat-card-num { background: linear-gradient(135deg,#ffb49a,#f9a8d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .stat-card.lilac .stat-card-num { background: linear-gradient(135deg,#c4b5fd,#a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .stat-card.mint  .stat-card-num { background: linear-gradient(135deg,#6ee7b7,#34d399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .stat-card-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; }
+    .stat-card-sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* Detailed row */
+    .detail-card {
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      padding: 20px 24px;
+      margin-bottom: 14px;
+    }
+    .detail-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .detail-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .detail-row:first-child { padding-top: 0; }
+    .detail-key { font-size: 0.88rem; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
+    .detail-key-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .detail-key-dot.peach { background: var(--peach); }
+    .detail-key-dot.lilac { background: var(--lilac); }
+    .detail-key-dot.mint  { background: var(--mint); }
+    .detail-key-dot.pink  { background: var(--pink); }
+    .detail-val { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); }
+
+    /* Live counter */
+    .live-counter {
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255,180,150,0.2);
+      background: rgba(255,180,150,0.05);
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .live-counter-left { display: flex; align-items: center; gap: 10px; }
+    .live-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--peach); animation: pulse 1.5s infinite; flex-shrink: 0; }
+    .live-label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+    .live-label span { color: var(--peach); }
+    .live-seconds { font-size: 1.1rem; font-weight: 800; color: var(--peach); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+
+    /* Milestone bar */
+    .milestone-card {
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      padding: 20px 24px;
+      margin-top: 14px;
+    }
+    .milestone-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .milestone-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+    }
+    .milestone-check {
+      width: 24px; height: 24px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+    .milestone-check.done { background: rgba(110,231,183,0.15); color: var(--mint); border: 1px solid rgba(110,231,183,0.3); }
+    .milestone-check.pending { background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid var(--border); }
+    .milestone-text { font-size: 0.88rem; color: var(--text-secondary); }
+    .milestone-text.done { color: var(--text-primary); }
+    .milestone-age { margin-left: auto; font-size: 0.78rem; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+
+    /* ─── TOOLS SECTION ─── */
+    .tools-section {
+      position: relative;
+      z-index: 1;
+      padding: 0 24px 80px;
+    }
+    .section-header { text-align: center; margin-bottom: 48px; }
+    .section-badge {
+      display: inline-block;
+      padding: 5px 16px;
+      border-radius: var(--radius-pill);
+      background: rgba(196,181,253,0.1);
+      border: 1px solid rgba(196,181,253,0.25);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--lilac);
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .section-sub { font-size: 1rem; color: var(--text-secondary); max-width: 480px; margin: 0 auto; }
+    .tools-grid {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .tool-card {
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      padding: 28px;
+      cursor: pointer;
+      transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition), background var(--transition);
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .tool-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 120px;
+      opacity: 0;
+      transition: opacity var(--transition);
+      border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+    }
+    .tool-card-1::after { background: radial-gradient(ellipse at bottom, rgba(255,180,150,0.08), transparent); }
+    .tool-card-2::after { background: radial-gradient(ellipse at bottom, rgba(196,181,253,0.08), transparent); }
+    .tool-card-3::after { background: radial-gradient(ellipse at bottom, rgba(110,231,183,0.08), transparent); }
+    .tool-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+    }
+    .tool-card:hover::after { opacity: 1; }
+    .tool-icon {
+      width: 54px; height: 54px;
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      margin-bottom: 18px;
+      position: relative;
+      z-index: 1;
+    }
+    .tool-icon-1 { background: linear-gradient(135deg,rgba(255,180,150,0.2),rgba(249,168,212,0.2)); border: 1px solid rgba(255,180,150,0.25); }
+    .tool-icon-2 { background: linear-gradient(135deg,rgba(196,181,253,0.2),rgba(167,139,250,0.2)); border: 1px solid rgba(196,181,253,0.25); }
+    .tool-icon-3 { background: linear-gradient(135deg,rgba(110,231,183,0.2),rgba(52,211,153,0.2)); border: 1px solid rgba(110,231,183,0.25); }
+    .tool-name { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; position: relative; z-index: 1; }
+    .tool-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 18px; position: relative; z-index: 1; }
+    .tool-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      position: relative;
+      z-index: 1;
+      transition: gap var(--transition);
+    }
+    .tool-link-1 { color: var(--peach); }
+    .tool-link-2 { color: var(--lilac); }
+    .tool-link-3 { color: var(--mint); }
+    .tool-card:hover .tool-link { gap: 10px; }
+    .tool-tag {
+      position: absolute;
+      top: 18px; right: 18px;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .tag-free { background: rgba(110,231,183,0.12); color: var(--mint); border: 1px solid rgba(110,231,183,0.25); }
+
+    /* ─── FAQ ─── */
+    .faq-section {
+      position: relative;
+      z-index: 1;
+      padding: 0 24px 80px;
+    }
+    .faq-list {
+      max-width: 700px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .faq-item {
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      overflow: hidden;
+      transition: border-color var(--transition), background var(--transition);
+    }
+    .faq-item.open { border-color: rgba(255,180,150,0.25); background: rgba(255,180,150,0.03); }
+    .faq-q {
+      width: 100%;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      font-family: inherit;
+      line-height: 1.4;
+      transition: color var(--transition);
+    }
+    .faq-q:hover { color: var(--peach); }
+    .faq-icon {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 16px;
+      color: var(--text-muted);
+      transition: transform var(--transition), background var(--transition), border-color var(--transition), color var(--transition);
+    }
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+      background: rgba(255,180,150,0.12);
+      border-color: rgba(255,180,150,0.3);
+      color: var(--peach);
+    }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), padding 0.3s ease;
+    }
+    .faq-item.open .faq-a { max-height: 300px; }
+    .faq-a-inner {
+      padding: 0 24px 20px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      padding-top: 16px;
+    }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 60px 24px 40px;
+    }
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 48px;
+    }
+    .footer-brand { }
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .footer-logo-icon {
+      width: 32px; height: 32px;
+      border-radius: 9px;
+      background: var(--gradient-btn);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+    }
+    .footer-tagline { font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; max-width: 220px; }
+    .footer-col-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.88rem;
+      transition: color var(--transition);
+    }
+    .footer-links a:hover { color: var(--peach); }
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-copy { font-size: 0.82rem; color: var(--text-muted); }
+    .footer-love { font-size: 0.82rem; color: var(--text-muted); }
+    .footer-love span { color: #f87171; }
+
+    /* ─── SCROLL ANIMATIONS ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .hero { padding: 72px 24px 48px; }
+      .hero-stats { gap: 24px; }
+      .hero-divider { display: none; }
+      .calc-header { padding: 24px 20px 0; gap: 10px; }
+      .calc-body { padding: 20px 20px 28px; }
+      .result-grid { grid-template-columns: repeat(3,1fr); gap: 10px; }
+      .stat-card { padding: 16px 10px; }
+      .stat-card-num { font-size: 1.5rem; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 28px; }
+      .footer-brand { grid-column: 1 / -1; }
+    }
+    @media (max-width: 480px) {
+      .result-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
+      .live-counter { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .result-title-bar { flex-direction: column; align-items: flex-start; }
+      .hero h1 { font-size: 2rem; }
+    }
+
+    /* ─── TOASTER ─── */
+    .toaster {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: rgba(30,28,45,0.95);
+      border: 1px solid rgba(110,231,183,0.3);
+      color: var(--mint);
+      padding: 12px 24px;
+      border-radius: var(--radius-pill);
+      font-size: 0.88rem;
+      font-weight: 600;
+      backdrop-filter: blur(20px);
+      z-index: 999;
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+      opacity: 0;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    .toaster.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* ─── SPARKLE ─── */
+    @keyframes sparkle {
+      0%   { transform: scale(0) rotate(0deg); opacity:1; }
+      100% { transform: scale(1.5) rotate(180deg); opacity:0; }
+    }
+    .sparkle {
+      position: absolute;
+      pointer-events: none;
+      font-size: 18px;
+      animation: sparkle 0.7s ease forwards;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Animated background blobs -->
+<div class="bg-blobs" aria-hidden="true">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="blob blob-4"></div>
+</div>
+
+<!-- ══════════════════════ NAVBAR ══════════════════════ -->
+<nav class="navbar" role="navigation" aria-label="Main navigation" id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-icon" aria-hidden="true">🌸</div>
+      <span class="nav-logo-text">BabyBloom</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Age Calculator</a></li>
+      <li><a href="due-date.html">Due Date</a></li>
+      <li><a href="sleep-calculator.html">Sleep</a></li>
+      <li><a href="feeding-calculator.html">Feeding</a></li>
+      <li><a href="#calculator" class="nav-cta">Calculate Now</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html"              onclick="closeMobileMenu()">🍼 Age Calculator</a>
+    <a href="due-date.html"           onclick="closeMobileMenu()">🤰 Due Date</a>
+    <a href="sleep-calculator.html"   onclick="closeMobileMenu()">😴 Sleep Calculator</a>
+    <a href="feeding-calculator.html" onclick="closeMobileMenu()">🥄 Feeding Schedule</a>
+  </div>
+</nav>
+
+<!-- ══════════════════════ HERO ══════════════════════ -->
+<header class="hero" role="banner">
+  <div class="hero-badge">
+    <span class="hero-badge-dot" aria-hidden="true"></span>
+    Free Baby Age Calculator
+  </div>
+  <h1>
+    Your Baby's Age,<br />
+    <span class="gradient-text">Beautifully Precise</span>
+  </h1>
+  <p>Calculate your little one's exact age in days, weeks, and months — with real-time updates and milestone insights.</p>
+  <div class="hero-stats" aria-label="Platform statistics">
+    <div class="hero-stat">
+      <div class="hero-stat-num">500K+</div>
+      <div class="hero-stat-label">Happy Parents</div>
+    </div>
+    <div class="hero-divider" aria-hidden="true"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">100%</div>
+      <div class="hero-stat-label">Free Forever</div>
+    </div>
+    <div class="hero-divider" aria-hidden="true"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">Live</div>
+      <div class="hero-stat-label">Age Counter</div>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════ CALCULATOR ══════════════════════ -->
+<section class="calc-section" id="calculator" aria-labelledby="calc-heading">
+  <article class="calc-card">
+    <div class="calc-header">
+      <div class="calc-icon" aria-hidden="true">🍼</div>
+      <div class="calc-header-text">
+        <h2 id="calc-heading">Baby Age Calculator</h2>
+        <p>Enter your baby's birth date to calculate their exact age</p>
+      </div>
+    </div>
+    <div class="calc-body">
+      <div class="input-group">
+        <label class="input-label" for="birthdate">
+          <span class="input-label-icon" aria-hidden="true">📅</span>
+          Baby's Date of Birth
+        </label>
+        <div class="date-input-wrapper">
+          <input
+            type="date"
+            id="birthdate"
+            class="date-input"
+            aria-describedby="birthdate-error"
+            aria-required="true"
+          />
+        </div>
+        <div class="input-error" id="birthdate-error" role="alert" aria-live="polite">
+          <span>⚠️</span>
+          <span id="error-msg">Please select a valid date</span>
+        </div>
+        <div class="quick-picks" role="group" aria-label="Quick date presets">
+          <button class="quick-btn" onclick="setQuickDate(7)" type="button">1 week ago</button>
+          <button class="quick-btn" onclick="setQuickDate(30)" type="button">1 month ago</button>
+          <button class="quick-btn" onclick="setQuickDate(90)" type="button">3 months ago</button>
+          <button class="quick-btn" onclick="setQuickDate(365)" type="button">1 year ago</button>
+        </div>
+      </div>
+
+      <button class="calc-btn" id="calcBtn" onclick="calculateAge()" type="button" aria-label="Calculate baby age">
+        <span class="calc-btn-inner">
+          <span class="calc-btn-icon" aria-hidden="true">✨</span>
+          Calculate My Baby's Age
+        </span>
+      </button>
+    </div>
+  </article>
+</section>
+
+<!-- ══════════════════════ RESULTS ══════════════════════ -->
+<section class="result-section" id="resultSection" aria-labelledby="result-heading" aria-live="polite">
+  <div class="result-inner">
+    <div class="result-title-bar">
+      <div class="result-title">
+        <span class="result-title-emoji" aria-hidden="true">🎉</span>
+        <h2 id="result-heading">Age Results</h2>
+      </div>
+      <button class="copy-btn" id="copyBtn" onclick="copyResult()" type="button" aria-label="Copy results to clipboard">
+        <span id="copyIcon">📋</span>
+        <span id="copyText">Copy Results</span>
+      </button>
+    </div>
+
+    <!-- Main stat cards -->
+    <div class="result-grid" role="region" aria-label="Age statistics">
+      <div class="stat-card peach" tabindex="0">
+        <span class="stat-card-icon" aria-hidden="true">📅</span>
+        <div class="stat-card-num" id="res-days">0</div>
+        <div class="stat-card-label">Total Days</div>
+        <div class="stat-card-sub" id="res-days-sub"></div>
+      </div>
+      <div class="stat-card lilac" tabindex="0">
+        <span class="stat-card-icon" aria-hidden="true">🗓</span>
+        <div class="stat-card-num" id="res-weeks">0</div>
+        <div class="stat-card-label">Total Weeks</div>
+        <div class="stat-card-sub" id="res-weeks-sub"></div>
+      </div>
+      <div class="stat-card mint" tabindex="0">
+        <span class="stat-card-icon" aria-hidden="true">🌱</span>
+        <div class="stat-card-num" id="res-months">0</div>
+        <div class="stat-card-label">Total Months</div>
+        <div class="stat-card-sub" id="res-months-sub"></div>
+      </div>
+    </div>
+
+    <!-- Detailed breakdown -->
+    <div class="detail-card" role="region" aria-label="Detailed age breakdown">
+      <div class="detail-row">
+        <div class="detail-key"><div class="detail-key-dot peach"></div>Age in Years</div>
+        <div class="detail-val" id="detail-years">—</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-key"><div class="detail-key-dot lilac"></div>Remaining Months</div>
+        <div class="detail-val" id="detail-rem-months">—</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-key"><div class="detail-key-dot mint"></div>Remaining Days</div>
+        <div class="detail-val" id="detail-rem-days">—</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-key"><div class="detail-key-dot pink"></div>Date of Birth</div>
+        <div class="detail-val" id="detail-dob">—</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-key"><div class="detail-key-dot peach"></div>Next Birthday</div>
+        <div class="detail-val" id="detail-next-bday">—</div>
+      </div>
+    </div>
+
+    <!-- Live counter -->
+    <div class="live-counter" role="timer" aria-live="off" aria-label="Live age counter in seconds">
+      <div class="live-counter-left">
+        <div class="live-dot" aria-hidden="true"></div>
+        <div class="live-label">Live counter — your baby is <span>growing</span> every second</div>
+      </div>
+      <div class="live-seconds" id="live-seconds" aria-label="Age in seconds">0 seconds old</div>
+    </div>
+
+    <!-- Milestones -->
+    <div class="milestone-card" role="region" aria-label="Development milestones">
+      <div class="milestone-title">
+        <span aria-hidden="true">🏆</span> Development Milestones
+      </div>
+      <div id="milestones-list"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ TOOLS ══════════════════════ -->
+<section class="tools-section" id="tools" aria-labelledby="tools-heading">
+  <div class="section-header reveal">
+    <div class="section-badge">Related Tools</div>
+    <h2 class="section-title" id="tools-heading">More <span class="gradient-text">Baby Tools</span></h2>
+    <p class="section-sub">Everything you need to track and plan your baby's journey — free and easy to use.</p>
+  </div>
+  <div class="tools-grid">
+    <a href="due-date.html" class="tool-card tool-card-1 reveal" role="article" aria-label="Due Date Calculator tool">
+      <span class="tool-tag tag-free">Free</span>
+      <div class="tool-icon tool-icon-1" aria-hidden="true">🤰</div>
+      <div class="tool-name">Due Date Calculator</div>
+      <div class="tool-desc">Calculate your estimated due date from your last menstrual period or conception date with precision.</div>
+      <div class="tool-link tool-link-1">Calculate EDD <span aria-hidden="true">→</span></div>
+    </a>
+    <a href="sleep-calculator.html" class="tool-card tool-card-2 reveal" role="article" aria-label="Baby Sleep Calculator tool">
+      <span class="tool-tag tag-free">Free</span>
+      <div class="tool-icon tool-icon-2" aria-hidden="true">😴</div>
+      <div class="tool-name">Baby Sleep Calculator</div>
+      <div class="tool-desc">Get a personalized sleep schedule based on your baby's age — nap times, bedtime, and wake windows.</div>
+      <div class="tool-link tool-link-2">Plan Sleep <span aria-hidden="true">→</span></div>
+    </a>
+    <a href="feeding-calculator.html" class="tool-card tool-card-3 reveal" role="article" aria-label="Feeding Schedule Calculator tool">
+      <span class="tool-tag tag-free">Free</span>
+      <div class="tool-icon tool-icon-3" aria-hidden="true">🍼</div>
+      <div class="tool-name">Feeding Schedule</div>
+      <div class="tool-desc">Build the perfect feeding schedule for breastfed or formula-fed babies based on their current age.</div>
+      <div class="tool-link tool-link-3">Plan Feeds <span aria-hidden="true">→</span></div>
+    </a>
+  </div>
+</section>
+
+<!-- ══════════════════════ FAQ ══════════════════════ -->
+<section class="faq-section" id="faq" aria-labelledby="faq-heading">
+  <div class="section-header reveal">
+    <div class="section-badge">FAQ</div>
+    <h2 class="section-title" id="faq-heading">Common <span class="gradient-text">Questions</span></h2>
+    <p class="section-sub">Everything parents ask about calculating and tracking baby age.</p>
+  </div>
+  <div class="faq-list" role="list">
+
+    <div class="faq-item" role="listitem">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+        How do I calculate my baby's age in weeks?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-a" role="region">
+        <div class="faq-a-inner">To calculate your baby's age in weeks, subtract the birth date from today's date to get the total number of days, then divide by 7. Our calculator does this automatically and shows the exact weeks and remaining days — updated live every second.</div>
+      </div>
+    </div>
+
+    <div class="faq-item" role="listitem">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+        Why does my baby's age in months matter?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-a" role="region">
+        <div class="faq-a-inner">Baby's age in months is crucial for tracking developmental milestones, scheduling vaccinations, and following feeding guidelines. Pediatricians use age in months up to 24 months to monitor healthy growth and development, making accurate tracking essential for every parent.</div>
+      </div>
+    </div>
+
+    <div class="faq-item" role="listitem">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+        What is the difference between corrected age and chronological age?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-a" role="region">
+        <div class="faq-a-inner">Chronological age is counted from the actual birth date. Corrected age (adjusted age) is used for premature babies and is calculated from the original due date. Corrected age is important for tracking milestones in preemie babies until about age 2, as it accounts for the time spent developing outside the womb earlier than expected.</div>
+      </div>
+    </div>
+
+    <div class="faq-item" role="listitem">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+        How accurate is this baby age calculator?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-a" role="region">
+        <div class="faq-a-inner">Our baby age calculator is extremely accurate. It calculates the precise number of days between the birth date and today, then converts to weeks and months. The live counter updates every second to give real-time age tracking. No rounding — you get the exact age with remaining days clearly displayed.</div>
+      </div>
+    </div>
+
+    <div class="faq-item" role="listitem">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+        Can I use this calculator for a future due date?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-a" role="region">
+        <div class="faq-a-inner">Currently, our calculator shows the current age from the birth date up to today. Future dates cannot be selected as the birth date to ensure accuracy. For calculating a due date or planning future milestones, use our Due Date Calculator and Feeding Schedule tools in the Related Tools section above.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════ FOOTER ══════════════════════ -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="footer-logo">
+          <div class="footer-logo-icon" aria-hidden="true">🌸</div>
+          <span class="gradient-text" style="font-size:1.1rem;font-weight:700;">BabyBloom</span>
+        </a>
+        <p class="footer-tagline">Premium free tools for modern parents — beautifully designed, scientifically accurate.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Tools</div>
+        <ul class="footer-links">
+          <li><a href="index.html">Age Calculator</a></li>
+          <li><a href="due-date.html">Due Date Calculator</a></li>
+          <li><a href="sleep-calculator.html">Sleep Calculator</a></li>
+          <li><a href="feeding-calculator.html">Feeding Schedule</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Resources</div>
+        <ul class="footer-links">
+          <li><a href="#">Milestone Guide</a></li>
+          <li><a href="#">Vaccination Chart</a></li>
+          <li><a href="#">Growth Tracker</a></li>
+          <li><a href="#">Baby Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 BabyBloom. All rights reserved.</div>
+      <div class="footer-love">Made with <span>♥</span> for every parent</div>
+    </div>
+  </div>
+</footer>
+
+<!-- Toaster -->
+<div class="toaster" id="toaster" role="status" aria-live="polite">
+  <span>✅</span> <span id="toaster-msg">Copied to clipboard!</span>
+</div>
+
+<!-- ══════════════════════ JAVASCRIPT ══════════════════════ -->
+<script>
+  /* ─── NAVBAR ─── */
+  const navbar   = document.getElementById('navbar');
+  const hamburger= document.getElementById('hamburger');
+  const mobileMenu=document.getElementById('mobileMenu');
+
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  hamburger.addEventListener('click', () => {
+    const open = mobileMenu.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+  });
+
+  function closeMobileMenu() {
+    mobileMenu.classList.remove('open');
+    hamburger.setAttribute('aria-expanded','false');
+  }
+
+  /* ─── SET MAX DATE (today) ─── */
+  window.addEventListener('DOMContentLoaded', () => {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('birthdate').setAttribute('max', today);
+    initScrollReveal();
+  });
+
+  /* ─── QUICK DATE PRESETS ─── */
+  function setQuickDate(daysAgo) {
+    const d = new Date();
+    d.setDate(d.getDate() - daysAgo);
+    const val = d.toISOString().split('T')[0];
+    document.getElementById('birthdate').value = val;
+    clearError();
+  }
+
+  /* ─── CALCULATE ─── */
+  let liveInterval = null;
+  let birthDateStored = null;
+
+  function calculateAge() {
+    const input = document.getElementById('birthdate');
+    const val   = input.value;
+
+    clearError();
+
+    if (!val) {
+      showError('Please select your baby\'s birth date.');
+      input.classList.add('error');
+      shake(input);
+      return;
+    }
+
+    const birth = new Date(val + 'T00:00:00');
+    const now   = new Date();
+    now.setHours(0,0,0,0);
+
+    if (birth > now) {
+      showError('Birth date cannot be in the future.');
+      input.classList.add('error');
+      shake(input);
+      return;
+    }
+
+    input.classList.remove('error');
+    birthDateStored = birth;
+
+    // Compute base values
+    const result = computeAge(birth);
+    renderResults(result, birth);
+
+    // Show result section
+    const rs = document.getElementById('resultSection');
+    rs.classList.add('show');
+    setTimeout(() => rs.scrollIntoView({ behavior:'smooth', block:'start' }), 100);
+
+    // Animate numbers
+    animateNumbers();
+
+    // Live counter
+    startLiveCounter(birth);
+
+    // Sparkle the button
+    spawnSparkles(document.getElementById('calcBtn'));
+  }
+
+  function computeAge(birth) {
+    const today = new Date();
+    const birthD = new Date(birth);
+
+    // Total days
+    const msPerDay = 1000 * 60 * 60 * 24;
+    const totalDays = Math.floor((today - birthD) / msPerDay);
+    const totalWeeks = Math.floor(totalDays / 7);
+    const remDaysInWeek = totalDays % 7;
+    const totalMonths = Math.floor(totalDays / 30.4375);
+
+    // Exact breakdown
+    let years = today.getFullYear() - birthD.getFullYear();
+    let months = today.getMonth() - birthD.getMonth();
+    let days   = today.getDate()  - birthD.getDate();
+
+    if (days < 0) {
+      months--;
+      const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+      days += prevMonth.getDate();
+    }
+    if (months < 0) { years--; months += 12; }
+
+    // Next birthday
+    let nextBday = new Date(today.getFullYear(), birthD.getMonth(), birthD.getDate());
+    if (nextBday <= today) nextBday.setFullYear(nextBday.getFullYear() + 1);
+    const daysToNextBday = Math.ceil((nextBday - today) / msPerDay);
+
+    return { totalDays, totalWeeks, remDaysInWeek, totalMonths, years, months, days, nextBday, daysToNextBday, birthD };
+  }
+
+  function renderResults(r, birth) {
+    // Main cards
+    document.getElementById('res-days').textContent   = r.totalDays.toLocaleString();
+    document.getElementById('res-weeks').textContent  = r.totalWeeks.toLocaleString();
+    document.getElementById('res-months').textContent = r.totalMonths.toLocaleString();
+
+    document.getElementById('res-days-sub').textContent  = `≈ ${r.totalWeeks} weeks`;
+    document.getElementById('res-weeks-sub').textContent = `+ ${r.remDaysInWeek} day${r.remDaysInWeek!==1?'s':''}`;
+    document.getElementById('res-months-sub').textContent= `+ ${r.days} day${r.days!==1?'s':''}`;
+
+    // Breakdown
+    document.getElementById('detail-years').textContent      = `${r.years} year${r.years!==1?'s':''}`;
+    document.getElementById('detail-rem-months').textContent = `${r.months} month${r.months!==1?'s':''}`;
+    document.getElementById('detail-rem-days').textContent   = `${r.days} day${r.days!==1?'s':''}`;
+    document.getElementById('detail-dob').textContent        = formatDate(birth);
+    document.getElementById('detail-next-bday').textContent  = `${formatDate(r.nextBday)} (${r.daysToNextBday} day${r.daysToNextBday!==1?'s':''} away)`;
+
+    // Milestones
+    renderMilestones(r.totalDays, r.totalWeeks, r.totalMonths);
+  }
+
+  function renderMilestones(days, weeks, months) {
+    const milestones = [
+      { label: 'First smile',           months: 1.5, emoji: '😊' },
+      { label: 'Holds head steady',     months: 2,   emoji: '💪' },
+      { label: 'Recognizes your face',  months: 3,   emoji: '👀' },
+      { label: 'Rolls over',            months: 4,   emoji: '🔄' },
+      { label: 'Sits with support',     months: 5,   emoji: '🪑' },
+      { label: 'First solid foods',     months: 6,   emoji: '🥄' },
+      { label: 'Sits independently',    months: 7,   emoji: '🧘' },
+      { label: 'Crawling begins',       months: 9,   emoji: '🐣' },
+      { label: 'First words',           months: 12,  emoji: '🗣' },
+      { label: 'First steps',           months: 12,  emoji: '👣' },
+    ];
+
+    const list = document.getElementById('milestones-list');
+    list.innerHTML = milestones.map(m => {
+      const done = months >= m.months;
+      return `
+        <div class="milestone-item">
+          <div class="milestone-check ${done?'done':'pending'}" aria-hidden="true">${done?'✓':'○'}</div>
+          <div class="milestone-text ${done?'done':''}">${m.emoji} ${m.label}</div>
+          <div class="milestone-age">${m.months < 1 ? Math.round(m.months*4)+' wks' : m.months+' mo'}</div>
+        </div>`;
+    }).join('');
+  }
+
+  /* ─── LIVE COUNTER ─── */
+  function startLiveCounter(birth) {
+    if (liveInterval) clearInterval(liveInterval);
+    updateLiveCounter(birth);
+    liveInterval = setInterval(() => updateLiveCounter(birth), 1000);
+  }
+
+  function updateLiveCounter(birth) {
+    const now  = new Date();
+    const secs = Math.floor((now - birth) / 1000);
+    document.getElementById('live-seconds').textContent = secs.toLocaleString() + ' seconds old';
+  }
+
+  /* ─── COPY RESULT ─── */
+  function copyResult() {
+    if (!birthDateStored) return;
+    const r = computeAge(birthDateStored);
+    const text =
+`🌸 BabyBloom — Baby Age Result
+📅 Date of Birth: ${formatDate(birthDateStored)}
+📆 Total Days:    ${r.totalDays.toLocaleString()} days
+🗓 Total Weeks:   ${r.totalWeeks.toLocaleString()} weeks (+ ${r.remDaysInWeek} days)
+🌱 Total Months:  ${r.totalMonths.toLocaleString()} months
+🎂 Exact Age:     ${r.years}y ${r.months}m ${r.days}d
+🎉 Next Birthday: ${formatDate(r.nextBday)} (in ${r.daysToNextBday} days)`;
+
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copyBtn');
+      const icon= document.getElementById('copyIcon');
+      const txt = document.getElementById('copyText');
+      btn.classList.add('copied');
+      icon.textContent = '✅';
+      txt.textContent  = 'Copied!';
+      showToast('Results copied to clipboard!');
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        icon.textContent = '📋';
+        txt.textContent  = 'Copy Results';
+      }, 2500);
+    }).catch(() => showToast('Could not copy — try manually.'));
+  }
+
+  /* ─── HELPERS ─── */
+  function formatDate(d) {
+    return new Date(d).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+  }
+
+  function showError(msg) {
+    document.getElementById('error-msg').textContent = msg;
+    document.getElementById('birthdate-error').classList.add('show');
+  }
+  function clearError() {
+    document.getElementById('birthdate-error').classList.remove('show');
+    document.getElementById('birthdate').classList.remove('error');
+  }
+
+  function shake(el) {
+    el.style.animation = 'none';
+    el.offsetHeight;
+    el.style.animation = 'shakeIt 0.4s ease';
+    el.addEventListener('animationend', () => el.style.animation='', { once:true });
+  }
+
+  /* ─── NUMBER ANIMATION ─── */
+  function animateNumbers() {
+    document.querySelectorAll('.stat-card-num').forEach(el => {
+      el.style.animation = 'none';
+      el.offsetHeight;
+      el.style.animation = 'numberPop 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards';
+    });
+  }
+
+  /* ─── FAQ ─── */
+  function toggleFaq(btn) {
+    const item   = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.faq-q').setAttribute('aria-expanded','false');
+    });
+    if (!isOpen) {
+      item.classList.add('open');
+      btn.setAttribute('aria-expanded','true');
+    }
+  }
+
+  /* ─── TOASTER ─── */
+  let toastTimeout;
+  function showToast(msg) {
+    const t = document.getElementById('toaster');
+    document.getElementById('toaster-msg').textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  /* ─── SPARKLES ─── */
+  function spawnSparkles(el) {
+    const icons = ['✨','🌸','⭐','💫','🎉'];
+    const rect  = el.getBoundingClientRect();
+    for (let i = 0; i < 6; i++) {
+      setTimeout(() => {
+        const s = document.createElement('div');
+        s.className = 'sparkle';
+        s.textContent = icons[Math.floor(Math.random()*icons.length)];
+        s.style.left = (rect.left + Math.random()*rect.width) + 'px';
+        s.style.top  = (rect.top  + window.scrollY - 10 + Math.random()*30) + 'px';
+        s.style.position = 'absolute';
+        s.style.zIndex = '999';
+        document.body.appendChild(s);
+        setTimeout(() => s.remove(), 800);
+      }, i * 80);
+    }
+  }
+
+  /* ─── SCROLL REVEAL ─── */
+  function initScrollReveal() {
+    const els = document.querySelectorAll('.reveal');
+    const io  = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 100);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    els.forEach(el => io.observe(el));
+  }
+
+  /* ─── CSS KEYFRAMES (injected) ─── */
+  const extraCSS = document.createElement('style');
+  extraCSS.textContent = `
+    @keyframes shakeIt {
+      0%,100%{transform:translateX(0)}
+      20%{transform:translateX(-8px)}
+      40%{transform:translateX(8px)}
+      60%{transform:translateX(-5px)}
+      80%{transform:translateX(5px)}
+    }
+  `;
+  document.head.appendChild(extraCSS);
+</script>
+</body>
+</html>
